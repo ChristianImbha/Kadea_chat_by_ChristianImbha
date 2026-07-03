@@ -28,6 +28,21 @@
             </div>
             <input type="email" id="email" placeholder="name@example.com" required
               class="block w-full pl-11 pr-4 py-3 bg-[#eff4ff] border-0 rounded-xl text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none text-sm">
+        </div>
+        <div>
+          <label for="password" class="block text-sm font-medium text-slate-600 mb-1.5">Password</label>
+          <div class="relative rounded-xl">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <i class="fa-solid fa-lock text-slate-400"></i>
+            </div>
+            <input type="password" id="password" placeholder="••••••••" required
+              class="block w-full pl-11 pr-11 py-3 bg-[#eff4ff] border-0 rounded-xl text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none text-sm">
+            <div class="absolute inset-y-0 right-0 pr-4 flex items-center">
+              <button type="button" class="text-slate-400 hover:text-slate-600 focus:outline-none btn-toggle-password" data-target="password">
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
+          </div>
         </div>    
       </form>
     </div>
