@@ -16,3 +16,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+    // 2. Gestion de la soumission du formulaire (Authentification)
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            // Récupération des éléments du formulaire
+            const email = document.getElementById('email').value.trim();
+            const password = passwordInput.value;
+            const rememberMe = document.getElementById('remember-me').checked;
+
+            // Préparation des données pour l'API de Kadea
+            const loginData = {
+                email: email,
+                password: password
+            };
