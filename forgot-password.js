@@ -32,3 +32,33 @@ forgotForm.addEventListener('submit', async (e) => {
         alert('Erreur de connexion au serveur.');
     }
 });
+
+// 2. Soumission du code et du nouveau mot de passe
+resetForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const code = document.getElementById('reset-code').value.trim();
+    const newPassword = document.getElementById('new-password').value;
+
+    try {
+        const response = await fetch(`${BASE_URL}/auth/reset-password`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': API_KEY
+            },
+            body: JSON.stringify({ code: code, newPassword: newPassword })
+        });
+
+        if (response.ok) {
+            alert('Votre mot de passe a été modifié avec succès !');
+            // Redirection vers la page de connexion
+            window.location.href = 'login.html';
+        } else {
+            const errorData = await response.json();
+            alert(`Erreur : ${errorData.message || 'Code invalide ou expiré.'}`);
+        }
+    } catch (error) {
+        console.error('Erreur réseau :', error);
+        alert('Erreur de connexion au serveur.');
+    }
+});
