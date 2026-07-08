@@ -1,5 +1,5 @@
 // Initialisation des configurations et liaison au DOM
-const API_KEY = "wksp_c3e1fb2ba091b7e4a9697b611e1d7168"; 
+const Workspace_API_KEY = "wksp_c3e1fb2ba091b7e4a9697b611e1d7168"; 
 const BASE_URL = "https://kadea-chat-api.onrender.com";
 
 const forgotForm = document.getElementById('forgot-form');
@@ -10,11 +10,11 @@ forgotForm.addEventListener('submit', async (e) => {
     const email = document.getElementById('forgot-email').value.trim();
 
     try {
-        const response = await fetch(`${BASE_URL}/auth/forgot-password`, {
+        const response = await fetch(`https://kadea-chat-api.onrender.com/auth/forgot-password`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'x-api-key': API_KEY
+                'x-api-key': Workspace_API_KEY
             },
             body: JSON.stringify({ email: email })
         });
@@ -40,7 +40,7 @@ resetForm.addEventListener('submit', async (e) => {
     const newPassword = document.getElementById('new-password').value;
 
     try {
-        const response = await fetch(`${BASE_URL}/auth/reset-password`, {
+        const response = await fetch(`https://kadea-chat-api.onrender.com/auth/forgot-password/auth/reset-password`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
