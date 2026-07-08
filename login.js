@@ -1,6 +1,6 @@
 // On attend que le DOM soit complètement chargé
 document.addEventListener('DOMContentLoaded', () => {
-    const loginForm = document.getElementById('loginForm');
+    const loginForm = document.getElementById('login-form');
     const togglePasswordBtn = document.querySelector('.btn-toggle-password');
     const passwordInput = document.getElementById('password');
     // 1. Fonctionnalité Bonus : Afficher / Masquer le mot de passe
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
             try {
                 // Remplacer l'URL ci-dessous par l'endpoint exact fourni dans tes consignes API
-                const response = await fetch("https://kadea-chat-api.onrender.com", {
+                const response = await fetch("https://kadea-chat-api.onrender.com/auth/login", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (rememberMe) {
                     localStorage.setItem('kadea_chat_token', result.token);
                 } else {
-                    sessionStorage.setItem('kadea_chat_token', electrification_token);
+                    sessionStorage.setItem('kadea_chat_token',result.token);
                 }
 
                 // Stocker aussi optionnellement les infos de l'utilisateur connecté (nom, avatar, id)
