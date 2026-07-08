@@ -48,19 +48,24 @@
                 
             </div>
         </div>
-        <div class="flex-1 overflow-y-auto p-6 space-y-6">
-            
-            <div class="flex flex-col items-center justify-center relative group">
-                <div class="relative w-40 h-40 rounded-full overflow-hidden border-4 border-gray-200 shadow-md">
-                    <img id="profile-avatar" src="https://via.placeholder.com/150" alt="Avatar Utilisateur" class="w-full h-full object-cover">
-                    <label for="avatar-input" class="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity duration-200">
-                        <i class="fas fa-camera text-2xl mb-1"></i>
-                        <span class="text-xs font-medium">CHANGER LA PHOTO</span>
-                    </label>
+        <div class="flex flex-col justify-center items-center overflow-y-auto p-6 space-y-6">    
+                        
+            <div class="flex justify-center items-center py-7">
+                <div class="relative w-48 h-48 rounded-full overflow-hidden shadow-sm bg-gray-200 flex items-center justify-center">
+                    <img id="user-display-avatar" src="https://via.placeholder.com/200" alt="Avatar" class="w-full h-full object-cover">
                 </div>
-                <input type="file" id="avatar-input" accept="image/*" class="hidden">
-
-   
+            </div>
+             <div class="px-8 py-4 shadow-sm space-y-2">
+                <span class="text-sm font-normal text-[#008069]">Votre nom</span>
+                <div class="flex justify-between items-center">
+                    <span id="user-display-name" class="text-[17px] text-[#111b21] font-normal">Chargement...</span>
+                </div>
+            </div>
+            <div class="px-8 py-1 mb-2">
+                <p class="text-[13px] text-[#667781] leading-relaxed">
+                    Ce n'est pas un nom d'utilisateur ni un code d'accès. Ce nom sera visible par vos contacts WhatsApp.
+                </p>
+            </div>       
     
 </body>
 </html>
