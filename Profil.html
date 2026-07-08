@@ -60,8 +60,27 @@
                     </label>
                 </div>
                 <input type="file" id="avatar-input" accept="image/*" class="hidden">
-            </div>
-            </div>
+            
+                <form id="profile-form" class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-medium text-[#008069] mb-1">Votre nom</label>
+                        <div class="flex items-center border-b-2 border-gray-200 focus-within:border-[#008069] py-2 transition">
+                            <input type="text" id="profile-name" placeholder="Ex: Jean Doe" required
+                                class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none">
+                            <i class="fas fa-pen text-gray-400 text-sm"></i>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1">Ce nom sera visible par vos contacts Kadea.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-[#008069] mb-1">Actu</label>
+                        <div class="flex items-center border-b-2 border-gray-200 focus-within:border-[#008069] py-2 transition">
+                            <input type="text" id="profile-status" placeholder="Disponible"
+                                class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none">
+                            <i class="fas fa-pen text-gray-400 text-sm"></i>
+                        </div>
+                    </div>
+            </div>        
         </div>
 
     </main>
