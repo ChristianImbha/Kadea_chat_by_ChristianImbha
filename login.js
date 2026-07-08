@@ -5,6 +5,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const passwordInput = document.getElementById('password');
     const API_URL = 'https://kadea-chat-api.onrender.com';
     const Workspace_API_KEY = 'wksp_c3e1fb2ba091b7e4a9697b611e1d7168';
+    /**
+ * Affiche le popup d'erreur personnalisé
+ * @param {string} message - Le texte à afficher dans la notification
+ */
+function showPopup(message) {
+  popupMessage.textContent = message;
+  customPopup.classList.remove('hidden');
+}
+
+// Écouteur pour fermer le popup d'erreur au clic sur son bouton
+closePopupBtn.addEventListener('click', () => {
+  customPopup.classList.add('hidden');
+});
+
+// Fermer le popup d'erreur si l'utilisateur clique en dehors de la boîte blanche
+customPopup.addEventListener('click', (e) => {
+  if (e.target === customPopup) {
+    customPopup.classList.add('hidden');
+  }
+});
     // 1. Afficher / Masquer le mot de passe
     if (togglePasswordBtn && passwordInput) {
         togglePasswordBtn.addEventListener('click', () => {
