@@ -1,50 +1,56 @@
-// BLOC 1 : Configuration globale
+// BLOC 1 : Configuration globale et liaisons API
 const API_URL = "https://kadea-chat-api.onrender.com";
 const Workspace_API_KEY = "wksp_c3e1fb2ba091b7e4a9697b611e1d7168";
 
 // Gestion de la visibilité des mots de passe (icône de l'œil)
 document.querySelectorAll('.btn-toggle-password').forEach(button => {
   button.addEventListener('click', () => {
-    // Récupère l'identifiant du champ cible grâce à l'attribut data-target
     const targetId = button.getAttribute('data-target');
     const input = document.getElementById(targetId);
     const icon = button.querySelector('i');
     
-    // Alterne entre le type 'password' et 'text'
     if (input.type === 'password') {
       input.type = 'text';
-      icon.classList.replace('fa-regular', 'fa-solid'); // Change le style de l'icône
+      icon.classList.replace('fa-regular', 'fa-solid'); // Devient œil plein
     } else {
       input.type = 'password';
-      icon.classList.replace('fa-solid', 'fa-regular');
+      icon.classList.replace('fa-solid', 'fa-regular'); // Devient œil contouré
     }
   });
 });
 
+// Gestionnaire pour la fermeture du Pop-up de succès et redirection
+document.getElementById('popupClose').addEventListener('click', () => {
+  const popup = document.getElementById('popup');
+  popup.classList.add('hidden');
+  window.location.href = 'login.html'; // Redirection vers la page de connexion
+});
+
+
 // BLOC 2 : Interception de l'événement de soumission du formulaire
 document.getElementById('registerForm').addEventListener('submit', async (e) => {
-  e.preventDefault(); // Empêche le rechargement natif de la page HTML
+  e.preventDefault(); // Empêche le rechargement natif de la page
 
-  // Récupération et nettoyage des valeurs saisies par l'utilisateur
+  // Récupération des valeurs saisies
   const fullName = document.getElementById('fullName').value.trim();
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
   const confirmPassword = document.getElementById('confirmPassword').value;
 
-  // Validation locale : vérification de la correspondance des mots de passe
+  // Validation locale : Correspondance des mots de passe
   if (password !== confirmPassword) {
-    alert("Erreur : Les mots de passe ne correspondent pas !");
-    return; // Arrête immédiatement l'exécution du script
+    alert("⚠️ Erreur : Les mots de passe ne correspondent pas !");
+    return;
   }
   
-  // Validation locale : présence d'un caractère spécial
+  // Validation locale : Présence d'un caractère spécial
   const specialCharRegex = /[!@#$%^&*(),.?:{}|<>]/;
   if (!specialCharRegex.test(password)) {
     alert("⚠️ Sécurité : Votre mot de passe doit contenir au moins un caractère spécial (ex: @, !, $, etc.).");
-    return; // Bloque la soumission si le caractère spécial est absent
+    return;
   }
 
-  // BLOC 3 : Préparation des données au format attendu par le backend
+  // BLOC 3 : Préparation de l'objet de données (Payload)
   const payload = {
     fullName: fullName, 
     email: email,
@@ -52,42 +58,30 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
   };
 
   try {
-    // CORRECTION ICI : Remplacement de /register par /auth/register
+    // Appel API vers le endpoint d'inscription
     const response = await fetch(`${API_URL}/auth/register`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json", // Indique au serveur qu'on lui envoie du JSON
-        "x-api-key": Workspace_API_KEY      // Utilisation dynamique de la variable déclarée en haut
+        "Content-Type": "application/json",
+        "x-api-key": Workspace_API_KEY
       },
-      body: JSON.stringify(payload) // Convertit l'objet JavaScript en chaîne JSON
+      body: JSON.stringify(payload)
     });
 
-    const data = await response.json(); // Analyse de la réponse JSON du serveur
+    const data = await response.json();
 
-   if (response.ok) {
-  const popup = document.getElementById('popup');
-  const popupContent = document.getElementById('popupContent');
-
-  // Affiche le fond
-  popup.classList.remove('hidden');
-  popup.classList.add('opacity-100');
-
-  // Animation du contenu (fade-in + slide-up)
-  setTimeout(() => {
-    popupContent.classList.remove('translate-y-10', 'opacity-0');
-    popupContent.classList.add('translate-y-0', 'opacity-100');
-  }, 50);
-
-  
-  document.getElementById('popupClose').addEventListener('click', () => {
-    popup.classList.add('hidden');
-    window.location.href = 'login.html';
-  });
-} 
+    if (response.ok) {
+      // Affichage du pop-up de succès (lié aux identifiants réels de register.html)
+      const popup = document.getElementById('popup');
+      popup.classList.remove('hidden');
+    } else {
+      // Gestion des erreurs renvoyées par l'API (ex: Email déjà existant)
+      alert(`❌ Échec de l'inscription : ${data.message || "Veuillez vérifier les informations saisies."}`);
+    }
 
   } catch (error) {
-    // Gestion des erreurs réseau (ex: panne serveur)
+    // Gestion des pannes réseau ou plantages majeurs
     console.error("Erreur réseau :", error);
-    alert("Impossible de joindre le serveur. Veuillez vérifier votre connexion.");
+    alert("📡 Impossible de joindre le serveur. Veuillez vérifier votre connexion internet.");
   }
 });
