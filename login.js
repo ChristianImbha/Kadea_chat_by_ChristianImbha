@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!response.ok) {
                     // Si le serveur renvoie une erreur (ex: mauvais mot de passe)
                     throw new Error(data.message || 'Authentification échouée');
+                    console.log(data);
                 }
                 // En cas de succès : Stockage du token de session
                 // Si "Keep me signed in" est coché -> localStorage (persistant), sinon sessionStorage (temporaire)
