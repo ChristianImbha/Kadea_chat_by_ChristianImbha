@@ -55,78 +55,113 @@
                 </button>
             </div>
         </header>
-    <main class="hidden md:flex flex-1 flex-col h-screen bg-gray-50" id="chat-panel">
-        <div class="flex items-center justify-between bg-gray-100 p-3 border-b border-gray-200 shadow-sm">
-            <div class="flex items-center space-x-3">                    
-                <h1 id="active-chat-title" class="font-bold text-blue-600 text-sm">Kadea-Chat</h1>                       
-                
-            </div>
-        </div>
-        <div class="flex flex-col justify-center items-center overflow-y-auto p-6 space-y-6">    
-                        
-            <div class="flex justify-center items-center py-7">
-                <div class="relative w-48 h-48 rounded-full overflow-hidden shadow-sm bg-gray-200 flex items-center justify-center">
-                    <img id="user-display-avatar" src="https://via.placeholder.com/200" alt="Avatar" class="w-full h-full object-cover">
-                </div>
-            </div>
-             <div class="px-8 shadow-sm space-y-2">
-                <span class="text-sm font-normal text-[#008069]">Votre nom</span>
-                <div class="flex justify-between items-center">
-                    <span id="user-display-name" class="text-[17px] text-[#111b21] font-normal">Chargement...</span>
-                </div>
-            </div>
+    <main class="flex-1 max-w-4xl w-full mx-auto px-6 py-10 flex flex-col items-center">
             
-            <div class=" px-8 shadow-sm space-y-2">
-                <span class="text-sm font-normal text-[#008069]">Adresse e-mail</span>
-                <div class="flex justify-between items-center">
-                    <span id="user-display-email" class="text-[17px] text-[#111b21] font-normal">Chargement...</span>
+            <div class="flex flex-col items-center text-center mb-8">
+                <div class="relative mb-4">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop" 
+                         alt="Alex Rivera" 
+                         class="w-28 h-28 rounded-full object-cover border border-slate-200 shadow-sm">
+                    <span class="absolute bottom-1 right-2 w-5 h-5 bg-green-500 border-4 border-white rounded-full"></span>
+                </div>
+                
+                <h2 class="text-2xl font-bold text-slate-800">Alex Rivera</h2>
+                <p class="text-sm text-slate-500 mt-0.5">alex.rivera@example.com</p>
+                
+                <div class="mt-3 inline-flex items-center gap-1.5 bg-blue-50 text-blue-600 text-xs font-medium px-3 py-1 rounded-full border border-blue-100">
+                    <i data-lucide="badge-check" class="w-3.5 h-3.5"></i>
+                    Membre depuis Octobre 2023
                 </div>
             </div>
-            <div>
-            <div class="px-8 py-1 mb-2">
-                <p class=" bg-gray-200 rounded-full [13px] text-[#667781] leading-relaxed">
-                   Member since October 2023
-                </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full mb-8">
+                
+                <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold text-slate-800 text-base">Account Details</h3>
+                        <i data-lucide="contact" class="w-5 h-5 text-slate-400"></i>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <span class="text-[11px] font-bold tracking-wider text-slate-400 uppercase block">Username</span>
+                            <span class="text-sm font-medium text-slate-700">arivera_chat</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] font-bold tracking-wider text-slate-400 uppercase block">Phone</span>
+                            <span class="text-sm font-medium text-slate-700">+1 (555) 012-3456</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] font-bold tracking-wider text-slate-400 uppercase block">Language</span>
+                            <span class="text-sm font-medium text-slate-700">English (US)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-bold text-slate-800 text-base">Privacy & Security</h3>
+                            <i data-lucide="lock" class="w-5 h-5 text-slate-400"></i>
+                        </div>
+                        
+                        <div class="space-y-1">
+                            <div class="flex items-center justify-between py-2.5">
+                                <div class="flex items-center gap-3 text-slate-700">
+                                    <i data-lucide="shield-check" class="w-5 h-5 text-slate-500"></i>
+                                    <span class="text-sm font-medium">Two-Factor Auth</span>
+                                </div>
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded">Enabled</span>
+                            </div>
+                            
+                            <button class="w-full flex items-center justify-between py-2.5 text-left hover:bg-slate-50 rounded-lg transition -mx-2 px-2">
+                                <div class="flex items-center gap-3 text-slate-700">
+                                    <i data-lucide="eye" class="w-5 h-5 text-slate-500"></i>
+                                    <span class="text-sm font-medium">Active Sessions</span>
+                                </div>
+                                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+                            </button>
+                            
+                            <button class="w-full flex items-center justify-between py-2.5 text-left hover:bg-slate-50 rounded-lg transition -mx-2 px-2">
+                                <div class="flex items-center gap-3 text-slate-700">
+                                    <i data-lucide="bell" class="w-5 h-5 text-slate-500"></i>
+                                    <span class="text-sm font-medium">Alert Preferences</span>
+                                </div>
+                                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
+
+            <div class="w-full max-w-md flex flex-col gap-3 items-center mb-12">
+                <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-xl flex items-center justify-center gap-2 shadow-sm transition">
+                    <i data-lucide="pen-tool" class="w-4 h-4"></i>
+                    Edit Profile
+                </button>
+                
+                <button class="w-full bg-[#e2e8f0] hover:bg-slate-300 text-slate-700 font-medium py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition">
+                    <i data-lucide="key-round" class="w-4 h-4"></i>
+                    Change Password
+                </button>
+                
+                <button class="mt-2 text-red-600 hover:text-red-700 font-semibold flex items-center gap-2 transition text-sm">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                    Logout
+                </button>
             </div>
-        </div>
-        <div class="flex border-slate-100 p-8 shadow-smflex flex-raw justify-between ">
-            <div class="flex flex-raw bg-white rounded-[2rem]  justify-between space-y-4">
-                <div class="flex flex-raw bg-white rounded-[2rem]  justify-between space-y-4">
-                    <h3 class=" text-2xl">Account Details</h3>
-                    <i class="fa-solid fa-id-badge text-gray-500 hover:text-blue-500"></i>
-                </div>
-                <div class="flex flex-raw justify-between">
-                    <ul>
-                        <li class="text-gray-400 text-l">USERNAME</li>
-                        <li>Christian_Chat</li>
-                        <li class="text-gray-400 text-l">PHONE</li>
-                        <li>+243 971 739 662</li>
-                        <li class="text-gray-400 text-l">LANGUAGE</li>
-                        <li>English (US)</li>
-                    </ul>
-                </div>
-            </div>        
-        
-            <div>
-                <div class="flex flex-raw bg-white rounded-[2rem]  justify-between space-y-4">
-                    <h3 class=" text-2xl">Account Details</h3>
-                    <i class="fa-solid fa-id-badge text-gray-500 hover:text-blue-500"></i>
-                </div>
-                <div class="flex flex-raw justify-between">
-                    <ul>
-                        <li class="text-gray-400 text-l">USERNAME</li>
-                        <li>Christian_Chat</li>
-                        <li class="text-gray-400 text-l">PHONE</li>
-                        <li>+243 971 739 662</li>
-                        <li class="text-gray-400 text-l">LANGUAGE</li>
-                        <li>English (US)</li>
-                    </ul>
-                </div>
-            </div>
-        </div>    
-    </main>    
+
+            <footer class="w-full border-t border-slate-200 pt-4 text-center">
+                <p class="text-[11px] text-slate-400 tracking-wide">Kadea Chat v1.0.0 — Encryption Active</p>
+            </footer>
+
+        </main>
     </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
           
     
 </body>
