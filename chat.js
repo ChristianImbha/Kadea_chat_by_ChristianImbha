@@ -131,3 +131,35 @@ function renderMessages(messages) {
     // Scroll automatique vers le bas pour voir le dernier message
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
+
+// 6. ÉCOUTEUR D'ÉVÉNEMENT : Gérer l'envoi d'un nouveau message
+messageForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const content = messageInput.value.trim();
+    if (!content || !activeRoomId) return;
+
+    // Vider instantanément le champ pour une UX fluide
+    messageInput.value = "";
+
+    try {
+        const response = await fetch(`${API_URL}/rooms/${activeRoomId}/messages`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+                "x-api-key": Workspace_API_KEY
+            },
+            body: JSON.stringify({ content: content })
+        });
+
+        if (response.ok) {
+            // Recharger l'historique pour afficher le nouveau message
+            await loadMessages(activeRoomId);
+        } else {
+            alert("Erreur lors de l'envoi du message.");
+        }
+    } catch (error) {
+        console.error("Erreur envoi:", error);
+    }
+});
