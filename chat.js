@@ -105,3 +105,29 @@ async function loadMessages(roomId) {
         console.error("Erreur messages:", error);
     }
 }
+
+// 5. FONCTION : Afficher les messages à l'écran
+function renderMessages(messages) {
+    messagesContainer.innerHTML = ""; // Reset du conteneur de messages
+
+    messages.forEach(msg => {
+        // Déterminer si le message vient de moi ou d'un autre utilisateur
+        const isMe = msg.senderId === localStorage.getItem("userId"); // Adapte la clé selon ton API
+        
+        const messageBlock = document.createElement("div");
+        messageBlock.className = `flex items-end space-x-2 max-w-[75%] ${isMe ? 'ml-auto justify-end' : ''}`;
+
+        messageBlock.innerHTML = `
+            <div class="${isMe ? 'bg-green-100 rounded-br-none' : 'bg-white rounded-bl-none'} text-gray-800 text-sm rounded-lg p-2.5 shadow-sm">
+                ${!isMe ? `<p class="font-bold text-xs text-indigo-600 mb-0.5">${msg.senderName || 'Utilisateur'}</p>` : ''}
+                <p>${msg.content}</p>
+                <span class="block text-right text-[10px] text-gray-400 mt-1">${formatTime(msg.createdAt)}</span>
+            </div>
+        `;
+
+        messagesContainer.appendChild(messageBlock);
+    });
+
+    // Scroll automatique vers le bas pour voir le dernier message
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
