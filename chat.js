@@ -16,3 +16,8 @@ const messageForm = document.getElementById("message-form");
 const messageInput = document.getElementById("message-input");
 const messagesContainer = document.getElementById("messages-container");
 const chatPanel = document.getElementById("chat-panel");
+
+// Éléments d'en-tête du chat actif
+const activeChatTitle = document.getElementById("active-chat-title");
+const activeChatStatus = document.getElementById("active-chat-status");
+const activeChatAvatar = document.getElementById("active-chat-avatar");
