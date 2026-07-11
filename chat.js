@@ -67,3 +67,21 @@ function renderRoomsList(rooms) {
         roomsContainer.appendChild(roomElement);
     });
 }
+
+// 3. FONCTION : Sélectionner un salon et charger son historique
+async function selectRoom(room) {
+    activeRoomId = room.id;
+    
+    // Mettre à jour l'en-tête du chat actif
+    activeChatTitle.textContent = room.name;
+    activeChatStatus.textContent = "En ligne";
+    activeChatAvatar.src = room.avatar || 'https://via.placeholder.com/40';
+    
+    // Rendre le panneau visible sur mobile au besoin
+    chatPanel.classList.remove("hidden");
+
+    await loadMessages(room.id);
+    
+    // Re-rendre la liste pour appliquer la classe active (fond grisé)
+    loadRooms(); 
+}
