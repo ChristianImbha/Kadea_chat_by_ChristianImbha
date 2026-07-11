@@ -85,3 +85,23 @@ async function selectRoom(room) {
     // Re-rendre la liste pour appliquer la classe active (fond grisé)
     loadRooms(); 
 }
+
+// 4. FONCTION : Récupérer les messages du salon actif
+async function loadMessages(roomId) {
+    try {
+        const response = await fetch(`${API_URL}/rooms/${roomId}/messages`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "x-api-key":Workspace_API_KEY
+            }
+        });
+
+        if (!response.ok) throw new Error("Erreur de récupération des messages.");
+
+        const messages = await response.json();
+        renderMessages(messages);
+    } catch (error) {
+        console.error("Erreur messages:", error);
+    }
+}
