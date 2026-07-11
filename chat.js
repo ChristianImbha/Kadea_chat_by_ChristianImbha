@@ -1,9 +1,9 @@
 // configuration de l'API Kadea
 const API_URL = "https://kadea-chat-api.onrender.com"; 
-const Workspace_API_KEY = "wksp_c3e1fb2ba091b7e4a9697b611e1d7168";
+const Workspace_API_KEY = 'wksp_c3e1fb2ba091b7e4a9697b611e1d7168';
 
 // Sécurisation de la page : Vérification immédiate du Token
-const token = localStorage.getItem("token");
+const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 if (!token) {
     window.location.href = "login.html";
 }

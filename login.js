@@ -22,12 +22,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 password: password
             };
             try {
-                
                 const response = await fetch("https://kadea-chat-api.onrender.com/auth/login", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                       'x-api-key': Workspace_API_KEY
+                        'x-api-key': Workspace_API_KEY
                     },
                     body: JSON.stringify(payload)
                 });
@@ -35,23 +34,34 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await response.json();
 
                 if (!response.ok) {
-                    // Si le serveur renvoie une erreur (ex: mauvais mot de passe)
                     throw new Error(data.message || 'Authentification échouée');
-                    console.log(data);
                 }
-                // En cas de succès : Stockage du token de session
-                // Si "Keep me signed in" est coché -> localStorage (persistant), sinon sessionStorage (temporaire)
+
+                // Récupération sécurisée du token selon la structure de ton API
+                // (s'adapte si le token est dans data.token ou data.data.token)
+                const userToken = data.token || (data.data && data.data.token);
+                
+                // Extraction de l'ID utilisateur (utile pour renderMessages dans chat.js)
+                const userId = data.user?.id || data.userId || (data.data && data.data.user && data.data.user.id);
+
+                if (!userToken) {
+                    throw new Error("Le serveur n'a pas renvoyé de jeton d'authentification valide.");
+                }
+
+                // Stockage du jeton selon le choix "Remember me"
                 if (rememberMe) {
-                    localStorage.setItem('token', data.data.token);
+                    localStorage.setItem('token', userToken);
                 } else {
-                    sessionStorage.setItem('token',data.data.token);
+                    sessionStorage.setItem('token', userToken);
                 }
 
-                // Stocker aussi optionnellement les infos de l'utilisateur connecté (nom, avatar, id)
-                localStorage.setItem('user_profile', JSON.stringify(data.user));
-
-                              
-                // Redirection vers l'interface principale de la messagerie
+                // Stockage des informations essentielles pour le fonctionnement du chat
+                if (userId) {
+                    localStorage.setItem('userId', userId);
+                }
+                localStorage.setItem('user_profile', JSON.stringify(data.user || data.data?.user || {}));
+                             
+                // Redirection vers l'interface principale
                 window.location.href = 'chat.html';
 
             } catch (error) {
