@@ -200,6 +200,48 @@ if (messageForm) {
         }
     });
 }
+// 7. GESTION DE LA CRÉATION D'UNE NOUVELLE DISCUSSION VIA L'INTERFACE
+const btnAddConversation = document.getElementById("btn-add-conversation");
+const newUserIdInput = document.getElementById("new-user-id");
+
+if (btnAddConversation && newUserIdInput) {
+    btnAddConversation.addEventListener("click", async () => {
+        const targetUserId = newUserIdInput.value.trim();
+
+        if (!targetUserId) {
+            alert("Veuillez coller l'ID d'un utilisateur pour commencer une discussion.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/conversations`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                    "x-api-key": Workspace_API_KEY
+                },
+                body: JSON.stringify({
+                    type: "private",
+                    participantIds: [targetUserId],
+                    name: "Discussion Privée"
+                })
+            });
+
+            if (response.ok) {
+                alert("Discussion créée avec succès !");
+                newUserIdInput.value = ""; // Vide le champ
+                await loadConversations(); // Recharge la liste de gauche pour l'afficher
+            } else {
+                const errorData = await response.json();
+                alert(`Erreur : ${errorData.message || "Impossible de créer la discussion"}`);
+            }
+        } catch (error) {
+            console.error("Erreur création conversation :", error);
+            alert("Une erreur réseau est survenue.");
+        }
+    });
+}
 
 // Initialisation au chargement de la page
 document.addEventListener("DOMContentLoaded", () => {
