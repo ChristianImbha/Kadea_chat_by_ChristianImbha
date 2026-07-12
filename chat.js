@@ -1,4 +1,4 @@
-// configuration de l'API Kadea
+// configuration de l'API
 const API_URL = "https://kadea-chat-api.onrender.com"; 
 const Workspace_API_KEY = 'wksp_c3e1fb2ba091b7e4a9697b611e1d7168';
 
@@ -32,7 +32,6 @@ function formatTime(dateString) {
 // 1. FONCTION : Charger et afficher la liste des conversations (à gauche)
 async function loadConversations() {
     try {
-        // CORRECTION SWAGGER : La route est /conversations
         const response = await fetch(`${API_URL}/conversations`, {
             method: "GET",
             headers: {
@@ -43,9 +42,15 @@ async function loadConversations() {
         });
 
         if (!response.ok) throw new Error("Impossible de récupérer les conversations.");
-
-        const conversations = await response.json();
-        renderConversationsList(conversations); 
+        
+        // 1. extrataction de JSON de la réponse dans la variable 'data'
+        const data = await response.json();
+        
+        // 2. vérification et sécurisation du format de 'data'
+        const conversationsArray = Array.isArray(data) ? data : (data.conversations || []);
+        
+        // 3. Enfin, on envoie le tableau sécurisé à l'affichage
+        renderConversationsList(conversationsArray); 
     } catch (error) {
         console.error("Erreur lors du chargement des conversations :", error);
     }
@@ -59,7 +64,7 @@ function renderConversationsList(conversations) {
     roomsContainer.innerHTML = ""; 
 
     if (conversations.length === 0) {
-        roomsContainer.innerHTML = `<p class="text-xs text-gray-400 text-center p-4">Aucune conversation. Créez-en une sur Swagger !</p>`;
+        roomsContainer.innerHTML = `<p class="text-xs text-gray-400 text-center p-4">Aucune conversation.</p>`;
         return;
     }
 
@@ -118,8 +123,7 @@ async function selectConversation(conv) {
 // 4. FONCTION : Récupérer les messages de la conversation active
 async function loadMessages(conversationId) {
     try {
-        // CORRECTION SWAGGER : La route est /conversations/{id}/messages
-        const response = await fetch(`${API_URL}/conversations/${conversationId}/messages`, {
+         const response = await fetch(`${API_URL}/conversations/${conversationId}/messages`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`,
@@ -142,7 +146,7 @@ function renderMessages(messages) {
     messagesContainer.innerHTML = ""; 
 
     messages.forEach(msg => {
-        const isMe = msg.senderId === localStorage.getItem("userId"); 
+        const isMe = msg.sender?.id === localStorage.getItem("userId"); 
         
         const messageBlock = document.createElement("div");
         // Utilisation de w-full et justification pour bloquer les messages du bon côté
@@ -150,7 +154,7 @@ function renderMessages(messages) {
 
         messageBlock.innerHTML = `
             <div class="${isMe ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-white text-gray-800 rounded-tl-none border border-gray-100'} max-w-xl text-sm rounded-2xl p-3 shadow-xs flex flex-col">
-                ${!isMe ? `<p class="font-bold text-xs text-blue-600 mb-0.5">${msg.senderName || 'Utilisateur'}</p>` : ''}
+                ${!isMe ? `<p class="font-bold text-xs text-blue-600 mb-0.5">${msg.sender?.fullName || 'Utilisateur'}</p>` : ''}
                 <p class="break-words">${msg.content}</p>
                 <span class="block text-right text-[10px] ${isMe ? 'text-blue-200' : 'text-gray-400'} mt-1">${formatTime(msg.createdAt)}</span>
             </div>
@@ -175,7 +179,7 @@ if (messageForm) {
         messageInput.value = "";
 
         try {
-            // CORRECTION SWAGGER : Route de type POST /conversations/{id}/messages
+            // Route de type POST /conversations/{id}/messages
             const response = await fetch(`${API_URL}/conversations/${activeConversationId}/messages`, {
                 method: "POST",
                 headers: {
