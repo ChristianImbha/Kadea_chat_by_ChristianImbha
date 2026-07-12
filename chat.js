@@ -45,11 +45,20 @@ async function loadConversations() {
         
         // 1. extrataction de JSON de la réponse dans la variable 'data'
         const data = await response.json();
+        console.log("Données reçues de l'API :", data);
         
-        // 2. vérification et sécurisation du format de 'data'
-        const conversationsArray = Array.isArray(data) ? data : (data.conversations || []);
+        let conversationsArray = [];
         
-        // 3. Enfin, on envoie le tableau sécurisé à l'affichage
+        // On descend d'un étage dans l'objet de l'API Kadea
+        if (data.data) {
+            if (Array.isArray(data.data)) {
+                conversationsArray = data.data;
+            } else if (data.data.conversations && Array.isArray(data.data.conversations)) {
+                conversationsArray = data.data.conversations; // C'est ici que se cache le tableau !
+            }
+        } else if (Array.isArray(data)) {
+            conversationsArray = data;
+        }
         renderConversationsList(conversationsArray); 
     } catch (error) {
         console.error("Erreur lors du chargement des conversations :", error);
@@ -141,9 +150,30 @@ async function loadMessages(conversationId) {
 }
 
 // 5. FONCTION : Afficher les messages à l'écran (Ajustée pour Tailwind)
-function renderMessages(messages) {
-    if (!messagesContainer) return;
-    messagesContainer.innerHTML = ""; 
+function renderMessages(messagesData) {
+    const messagesContainer = document.getElementById("messages-container"); // Ajuste l'ID si nécessaire
+    messagesContainer.innerHTML = ""; // On vide le conteneur
+
+    // 🔍 Sécurisation : On cherche le tableau des messages dans la réponse de l'API
+    let messagesArray = [];
+    
+    if (Array.isArray(messagesData)) {
+        messagesArray = messagesData;
+    } else if (messagesData && messagesData.data) {
+        if (Array.isArray(messagesData.data)) {
+            messagesArray = messagesData.data;
+        } else if (messagesData.data.messages && Array.isArray(messagesData.data.messages)) {
+            messagesArray = messagesData.data.messages;
+        }
+    } else if (messagesData && messagesData.messages && Array.isArray(messagesData.messages)) {
+        messagesArray = messagesData.messages;
+    }
+
+    // Si aucun message ou si le salon est vide, on s'arrête proprement
+    if (messagesArray.length === 0) {
+        messagesContainer.innerHTML = "<p class='text-center text-gray-500 py-4'>Aucun message dans cette discussion.</p>";
+        return;
+    } 
 
     messages.forEach(msg => {
         const isMe = msg.sender?.id === localStorage.getItem("userId"); 
