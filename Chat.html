@@ -32,155 +32,70 @@
         </div>
     </aside>
 
+   <!-- SECTION GAUCHE : Liste des conversations -->
     <section class="w-80 bg-white border-r border-gray-200 flex flex-col shrink-0">
         <div class="p-4 flex justify-between items-center border-b border-gray-100">
             <div class="flex items-center gap-3">
                 <div class="relative">
-                    <img src="" alt="Alex Rivera" class="w-10 h-10 rounded-full object-cover">
+                    <img id="active-user-avatar" src="https://via.placeholder.com/40" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
                     <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
                 </div>
                 <div>
-                    <h2 class="text-sm font-semibold text-gray-900">Alex Rivera</h2>
-                    <p class="text-xs text-gray-500">My Status: Active</p>
+                    <h2 class="text-sm font-semibold text-gray-900">Mon Profil</h2>
+                    <p class="text-xs text-gray-500">Statut : Actif</p>
                 </div>
             </div>
-            <button class="text-gray-500 hover:text-gray-700 p-1.5 hover:bg-gray-100 rounded-lg transition">
-                <i data-lucide="square-pen" class="w-5 h-5"></i>
-            </button>
         </div>
 
         <div class="p-4 relative">
             <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-7 top-1/2 -translate-y-1/2"></i>
-            <input type="text" placeholder="Search conversations..." class="w-full bg-gray-50 pl-10 pr-4 py-2 rounded-xl text-sm border-0 focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition">
+            <input type="text" placeholder="Rechercher une conversation..." class="w-full bg-gray-50 pl-10 pr-4 py-2 rounded-xl text-sm border-0 focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition">
         </div>
 
-        <div class="flex-1 overflow-y-auto space-y-1 px-2">
-            <div class="flex items-center gap-3 p-3 bg-blue-50/60 rounded-xl cursor-pointer border-l-4 border-blue-600">
-                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80" alt="Sarah Connor" class="w-11 h-11 rounded-full object-cover shrink-0">
-                <div class="flex-1 min-w-0">
-                    <div class="flex justify-between items-baseline mb-0.5">
-                        <h3 class="text-sm font-semibold text-gray-900 truncate">Sarah Connor</h3>
-                        <span class="text-xs font-medium text-blue-600">14:20</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <p class="text-xs text-gray-600 truncate">Yeah, that sounds like a great plan!</p>
-                        <span class="bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-4 text-center">2</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl cursor-pointer transition">
-                <div class="w-11 h-11 rounded-full bg-blue-100 text-blue-700 font-semibold flex items-center justify-center text-sm shrink-0">JD</div>
-                <div class="flex-1 min-w-0">
-                    <div class="flex justify-between items-baseline mb-0.5">
-                        <h3 class="text-sm font-semibold text-gray-900 truncate">John Doe</h3>
-                        <span class="text-xs text-gray-400">Yesterday</span>
-                    </div>
-                    <p class="text-xs text-gray-500 truncate">Can you send me those files again?</p>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl cursor-pointer transition">
-                <div class="w-11 h-11 rounded-full bg-orange-100 text-orange-700 font-semibold flex items-center justify-center text-sm shrink-0">ML</div>
-                <div class="flex-1 min-w-0">
-                    <div class="flex justify-between items-baseline mb-0.5">
-                        <h3 class="text-sm font-semibold text-gray-900 truncate">Maria Lopez</h3>
-                        <span class="text-xs text-gray-400">Tuesday</span>
-                    </div>
-                    <p class="text-xs text-gray-500 truncate">The project deadline has been moved.</p>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl cursor-pointer transition">
-                <div class="w-11 h-11 rounded-full bg-gray-200 text-gray-700 font-semibold flex items-center justify-center text-sm shrink-0">DW</div>
-                <div class="flex-1 min-w-0">
-                    <div class="flex justify-between items-baseline mb-0.5">
-                        <h3 class="text-sm font-semibold text-gray-900 truncate">David Wright</h3>
-                        <span class="text-xs text-gray-400">08:45</span>
-                    </div>
-                    <p class="text-xs text-gray-500 truncate">Let's grab coffee later today.</p>
-                </div>
-            </div>
+        <!-- ID AJOUTÉ ICI pour la liste de gauche -->
+        <div id="rooms-list" class="flex-1 overflow-y-auto space-y-1 px-2">
+            <!-- Les conversations chargées via l'API s'injecteront ici automatiquement -->
         </div>
     </section>
 
-    <main class="flex-1 bg-slate-50 flex flex-col h-full">
+    <!-- SECTION PRINCIPALE : Fenêtre de Chat -->
+    <main id="chat-panel" class="flex-1 bg-slate-50 flex flex-col h-full">
         <header class="h-16 bg-white border-b border-gray-200 flex justify-between items-center px-6 shrink-0">
             <div class="flex items-center gap-3">
                 <div class="relative">
-                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80" alt="Sarah Connor" class="w-10 h-10 rounded-full object-cover">
+                    <img id="active-chat-avatar" src="https://via.placeholder.com/40" alt="Avatar Conversation" class="w-10 h-10 rounded-full object-cover">
                     <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></span>
                 </div>
                 <div>
-                    <h2 class="text-sm font-semibold text-gray-900">Sarah Connor</h2>
-                    <p class="text-xs text-green-500 flex items-center gap-1">Online</p>
+                    <h2 id="active-chat-title" class="text-sm font-semibold text-gray-900">Sélectionnez une discussion</h2>
+                    <p id="active-chat-status" class="text-xs text-gray-400">Hors ligne</p>
                 </div>
-            </div>
-            <div class="flex items-center gap-2 text-gray-500">
-                <button class="p-2 hover:bg-gray-100 rounded-lg transition"><i data-lucide="video" class="w-5 h-5"></i></button>
-                <button class="p-2 hover:bg-gray-100 rounded-lg transition"><i data-lucide="phone" class="w-5 h-5"></i></button>
-                <button class="p-2 hover:bg-gray-100 rounded-lg transition"><i data-lucide="more-vertical" class="w-5 h-5"></i></button>
             </div>
         </header>
 
-        <div class="flex-1 overflow-y-auto p-6 space-y-6">
-            <div class="flex justify-center">
-                <span class="bg-gray-200/70 text-gray-600 text-[11px] font-medium px-2.5 py-1 rounded-full">Today</span>
-            </div>
-
-            <div class="flex flex-col items-start max-w-xl space-y-1">
-                <div class="bg-white text-gray-800 text-sm p-3 rounded-2xl rounded-tl-none border border-gray-100 shadow-xs">
-                    Hey Alex! Did you manage to look at the designs I sent over last night?
-                </div>
-                <span class="text-[10px] text-gray-400 pl-1">14:02</span>
-            </div>
-
-            <div class="flex flex-col items-end space-y-3">
-                <div class="flex flex-col items-end max-w-xl space-y-1">
-                    <div class="bg-blue-600 text-white text-sm p-3 rounded-2xl rounded-tr-none shadow-xs">
-                        Hey Sarah! Yes, I just finished reviewing them. They look incredible!
-                    </div>
-                    <span class="text-[10px] text-gray-400 pr-1">14:05</span>
-                </div>
-
-                <div class="flex flex-col items-end max-w-xl space-y-1">
-                    <div class="bg-blue-600 text-white text-sm p-3 rounded-2xl rounded-tr-none shadow-xs">
-                        The new color palette really makes the dashboard pop. I think the team will love it.
-                    </div>
-                    <span class="text-[10px] text-gray-400 pr-1">14:06</span>
-                </div>
-            </div>
-
-            <div class="flex flex-col items-start max-w-xl space-y-1">
-                <div class="bg-white text-gray-800 text-sm p-3 rounded-2xl rounded-tl-none border border-gray-100 shadow-xs">
-                    Awesome! I was a bit worried about the contrast on the charts, but if you think it works then I'm happy.
-                </div>
-                <span class="text-[10px] text-gray-400 pl-1">14:15</span>
-            </div>
-
-            <div class="flex flex-col items-start max-w-xl space-y-1">
-                <div class="bg-white text-gray-800 text-sm p-3 rounded-2xl rounded-tl-none border border-gray-100 shadow-xs">
-                    Yeah, that sounds like a great plan! Let's present it during the sync tomorrow.
-                </div>
-                <span class="text-[10px] text-gray-400 pl-1">14:20</span>
+        <!-- ID AJOUTÉ ICI pour le conteneur de bulles de messages -->
+        <div id="messages-container" class="flex-1 overflow-y-auto p-6 space-y-4 flex flex-col">
+            <div class="text-center text-gray-400 text-sm my-auto">
+                Cliquez sur une conversation à gauche pour commencer à discuter.
             </div>
         </div>
 
-        <footer class="p-4 bg-white border-t border-gray-200 flex items-center gap-3">
-            <button class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-50 transition">
+        <!-- CHANGEMENT EN BALISE <form> ICI pour capter le submit -->
+        <form id="message-form" class="p-4 bg-white border-t border-gray-200 flex items-center gap-3">
+            <button type="button" class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-50 transition">
                 <i data-lucide="plus" class="w-6 h-6"></i>
             </button>
-            <button class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-50 transition mr-1">
+            <button type="button" class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-50 transition mr-1">
                 <i data-lucide="smile" class="w-6 h-6"></i>
             </button>
             
             <div class="flex-1 relative flex items-center">
-                <input type="text" id="message-input" placeholder="Type a message..." class="w-full bg-gray-50 border border-gray-200 text-sm pl-4 pr-12 py-3 rounded-2xl focus:outline-none focus:border-blue-500 focus:bg-white transition">
-                <button id="send-btn" class="absolute right-2 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-xl transition shadow-xs cursor-pointer">
+                <input type="text" id="message-input" autocomplete="off" placeholder="Tapez votre message..." class="w-full bg-gray-50 border border-gray-200 text-sm pl-4 pr-12 py-3 rounded-2xl focus:outline-none focus:border-blue-500 focus:bg-white transition">
+                <button type="submit" id="send-btn" class="absolute right-2 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-xl transition shadow-sm cursor-pointer">
                     <i data-lucide="send-horizontal" class="w-4 h-4"></i>
                 </button>
             </div>
-        </footer>
+        </form>
     </main>
 
     <script>
