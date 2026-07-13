@@ -310,5 +310,5 @@ if (btnAddConversation && newUserIdInput) {
 
 // Initialisation au chargement de la page
 document.addEventListener("DOMContentLoaded", () => {
-    loadConversations();
+    loadUsers(); // On charge les personnes enregistrées directement !
 });
