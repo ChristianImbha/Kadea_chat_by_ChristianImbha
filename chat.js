@@ -5,6 +5,7 @@ const Workspace_API_KEY = 'wksp_c3e1fb2ba091b7e4a9697b611e1d7168';
 // Éléments du profil utilisateur connecté
 const myAvatar = document.getElementById("active-user-avatar"); 
 const myName = document.getElementById("active-user-name"); 
+const currentUserId = localStorage.getItem("userId");
 
 // Sécurisation de la page : Vérification immédiate du Token
 const token = localStorage.getItem("token") || sessionStorage.getItem("token");
@@ -238,13 +239,14 @@ async function loadMessages(conversationId) {
     }
 }
 
-// 7. FONCTION : Afficher les messages à l'écran
+// 7. FONCTION : Afficher les messages à l'écran (Corrigée pour l'alignement gauche/droite)
 function renderMessages(messagesData) {
     const messagesContainer = document.getElementById("messages-container"); 
     if (!messagesContainer) return;
     
     messagesContainer.innerHTML = ""; 
 
+    // Sécurisation : On cherche le tableau des messages dans la réponse de l'API
     let messages = [];
     if (Array.isArray(messagesData)) {
         messages = messagesData;
@@ -263,14 +265,24 @@ function renderMessages(messagesData) {
         return;
     } 
 
-    const currentUserId = localStorage.getItem("userId"); 
+    // Récupération et nettoyage de ton ID utilisateur connecté
+    let currentUserId = localStorage.getItem("userId");
+    if (currentUserId) {
+        currentUserId = currentUserId.replace(/['"]+/g, '').trim(); // Enlève d'éventuels guillemets résiduels
+    }
 
     messages.forEach(msg => {
-        const isMe = msg.senderId === currentUserId || 
-                     (msg.sender && msg.sender.id === currentUserId) || 
-                     msg.userId === currentUserId;
+        // Extraction de l'ID de l'expéditeur du message
+        let senderId = msg.senderId || msg.userId || (msg.sender && msg.sender.id);
+        if (senderId) {
+            senderId = String(senderId).replace(/['"]+/g, '').trim();
+        }
+        
+        // Comparaison stricte et nettoyée
+        const isMe = senderId === currentUserId;
         
         const messageBlock = document.createElement("div");
+        // w-full + justify-end (droite pour moi) OU justify-start (gauche pour l'autre)
         messageBlock.className = `flex w-full ${isMe ? 'justify-end' : 'justify-start'} mb-2`;
 
         messageBlock.innerHTML = `
@@ -284,6 +296,7 @@ function renderMessages(messagesData) {
         messagesContainer.appendChild(messageBlock);
     });
 
+    // Scroll automatique vers le bas fluide
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
