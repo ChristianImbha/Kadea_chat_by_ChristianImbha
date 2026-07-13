@@ -2,8 +2,8 @@
 const API_URL = "https://kadea-chat-api.onrender.com"; 
 const Workspace_API_KEY = 'wksp_c3e1fb2ba091b7e4a9697b611e1d7168';
 // Éléments du profil utilisateur connecté
-const myAvatar = document.getElementById("my-avatar");
-const myName = document.getElementById("my-name");
+const myAvatar = document.getElementById("active-user-avatar"); // <img id="active-user-avatar">
+const myName = document.getElementById(".w-80 he"); // Cible le <h2> "Mon Profil"
 
 // Sécurisation de la page : Vérification immédiate du Token
 const token = localStorage.getItem("token") || sessionStorage.getItem("token");
