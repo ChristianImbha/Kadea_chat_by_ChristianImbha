@@ -145,9 +145,11 @@ function renderUsersList(users) {
     });
 }
 
-// 4. FONCTION INTERMÉDIAIRE : Cliquer sur un utilisateur (FIX: Ajout du Body obligatoire)
+// 4. FONCTION INTERMÉDIAIRE : Cliquer sur un utilisateur 
 async function handleStartChat(targetUserId, displayName, displayAvatar) {
     try {
+        console.log("Clic détecté pour l'utilisateur :", targetUserId);
+
         const response = await fetch(`${API_URL}/conversations`, {
             method: "POST",
             headers: {
@@ -162,25 +164,36 @@ async function handleStartChat(targetUserId, displayName, displayAvatar) {
             })
         });
 
-        if (!response.ok) throw new Error("Erreur de création de la conversation.");
+        // L'API peut renvoyer 200 (existe déjà) ou 201 (créée à l'instant)
+        console.log("Statut HTTP reçu de l'API :", response.status);
+
+        if (!response.ok) throw new Error(`Erreur API : Statut ${response.status}`);
+
         const result = await response.json();
+        console.log("Données reçues de la conversation :", result);
         
+        // Extraction de l'ID avec une tolérance maximale pour toutes les structures d'API
         let conversationId = null;
-        if (result.data && result.data.id) {
-            conversationId = result.data.id;
-        } else if (result.id) {
+        if (result.data) {
+            conversationId = result.data.id || (result.data.conversation && result.data.conversation.id);
+        } else {
             conversationId = result.id;
         }
 
+        console.log("ID final extrait pour l'affichage :", conversationId);
+
         if (conversationId) {
+            // Déclenchement de l'affichage dans le panneau de droite
             selectConversation({
                 id: conversationId,
                 name: displayName,
                 avatar: displayAvatar
             });
+        } else {
+            console.error("Structure JSON inattendue : impossible de lire l'ID de la conversation.");
         }
     } catch (error) {
-        console.error("Erreur lors de l'ouverture de la discussion :", error);
+        console.error("Erreur lors de l'initialisation de la discussion :", error);
     }
 }
 
