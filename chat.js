@@ -29,7 +29,7 @@ function formatTime(dateString) {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-// 1. NOUVELLE FONCTION : Charger et afficher la liste de TOUS les utilisateurs du Workspace
+// 1. Charger et afficher la liste de TOUS les utilisateurs du Workspace
 async function loadUsers() {
     try {
         // On appelle la route qui liste les utilisateurs (ex: /users ou /auth/users selon ton API Kadea)
@@ -64,46 +64,38 @@ async function loadUsers() {
     }
 }
 
-// 2. FONCTION : Injecter la liste des conversations dans le HTML
-function renderConversationsList(conversations) {
+// 2. FONCTION : Injecter la liste des utilisateurs dans le HTML à gauche
+function renderUsersList(users) {
     const roomsContainer = document.getElementById("rooms-list");
     if (!roomsContainer) return;
 
     roomsContainer.innerHTML = ""; 
 
-    if (conversations.length === 0) {
-        roomsContainer.innerHTML = `<p class="text-xs text-gray-400 text-center p-4">Aucune conversation.</p>`;
+    if (users.length === 0) {
+        roomsContainer.innerHTML = `<p class="text-xs text-gray-400 text-center p-4">Aucun autre utilisateur trouvé.</p>`;
         return;
     }
 
-    conversations.forEach(conv => {
-        const convElement = document.createElement("div");
-        convElement.dataset.conversationId = conv.id;
-        convElement.className = `conversation-item flex items-center space-x-3 p-3 hover:bg-slate-100 cursor-pointer rounded-xl transition ${activeConversationId === conv.id ? 'bg-slate-100' : ''}`;
+    users.forEach(user => {
+        const userElement = document.createElement("div");
+        userElement.dataset.targetUserId = user.id;
+        userElement.className = `conversation-item flex items-center space-x-3 p-3 hover:bg-slate-100 cursor-pointer rounded-xl transition`;
         
-        // Trouver le participant qui n'est pas moi pour afficher son nom
-        const currentUserId = localStorage.getItem("userId");
-        const interlocuteur = conv.participants?.find(p => p.id !== currentUserId);
-        const displayName = conv.type === 'private' ? (interlocuteur?.fullName || 'Utilisateur') : conv.name;
-        const displayAvatar = interlocuteur?.avatarUrl || 'https://via.placeholder.com/40';
+        const displayAvatar = user.avatarUrl || 'https://via.placeholder.com/40';
 
-        convElement.innerHTML = `
+        userElement.innerHTML = `
             <img src="${displayAvatar}" class="w-10 h-10 rounded-full object-cover" alt="Avatar">
             <div class="flex-1 min-w-0">
-                <h3 class="text-sm font-semibold text-gray-800 truncate">${displayName}</h3>
-                <p class="text-xs text-gray-500 truncate">Cliquez pour voir les messages</p>
+                <h3 class="text-sm font-semibold text-gray-800 truncate">${user.fullName || 'Utilisateur'}</h3>
+                <p class="text-xs text-green-500 truncate">Cliquez pour discutez</p>
             </div>
         `;
 
-        convElement.addEventListener("click", () => selectConversation({
-            id: conv.id,
-            name: displayName,
-            avatar: displayAvatar
-        }));
-        roomsContainer.appendChild(convElement);
+        // Quand on clique sur l'utilisateur, on lance ou récupère la discussion
+        userElement.addEventListener("click", () => handleStartChat(user.id, user.fullName, displayAvatar));
+        roomsContainer.appendChild(userElement);
     });
 }
-
 
 // 3. FONCTION : Sélectionner une conversation et charger son historique
 async function selectConversation(conv) {
