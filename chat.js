@@ -35,6 +35,7 @@ function formatTime(dateString) {
 }
 
 // 1. Charger et afficher la liste de TOUS les utilisateurs du Workspace
+// 1. Charger et afficher la liste de TOUS les utilisateurs du Workspace sauf soi-même
 async function loadUsers() {
     try {
         const response = await fetch(`${API_URL}/users`, {
@@ -51,26 +52,39 @@ async function loadUsers() {
         const resJson = await response.json();
         
         let usersArray = [];
+        // On extrait le tableau d'utilisateurs selon la structure de l'API Kadea
         if (resJson.data && Array.isArray(resJson.data.users)) {
             usersArray = resJson.data.users;
+        } else if (Array.isArray(resJson.data)) {
+            usersArray = resJson.data;
+        } else if (Array.isArray(resJson)) {
+            usersArray = resJson;
         }
 
-     // 1. Récupération et nettoyage strict de ton ID connecté
+        // 1. Récupération et nettoyage strict de ton propre ID connecté
         let currentUserId = localStorage.getItem("userId");
         if (currentUserId) {
             currentUserId = currentUserId.replace(/['"]+/g, '').trim();
         }
 
-        // 2. Filtrage : On ne garde que les utilisateurs dont l'ID est DIFFÉRENT du mien
+        // 2. Utilisation de .filter() pour enlever ton profil de la liste de gauche
         const filteredUsers = usersArray.filter(user => {
-            if (!user.id) return true;
-            // On nettoie aussi l'ID de l'utilisateur de l'API au cas où
+            if (!user.id) return true; // Si l'utilisateur n'a pas d'ID, on le garde par sécurité
+            
+            // On nettoie aussi l'ID de l'utilisateur de l'API pour être sûr de la comparaison
             const cleanUserId = String(user.id).replace(/['"]+/g, '').trim();
+            
+            // On ne garde que ceux qui sont DIFFÉRENTS de moi
             return cleanUserId !== currentUserId;
         });
 
-        // 3. Affichage de la liste propre
-        renderUsersList(filteredUsers);
+        // 3. On injecte la liste filtrée dans le HTML
+        renderUsersList(filteredUsers); 
+
+    } catch (error) {
+        console.error("Erreur lors du chargement des utilisateurs :", error);
+    }
+}
 
 // 2. FONCTION : Charger et afficher les infos de l'utilisateur connecté avec Fallback
 async function loadMyProfile() {
