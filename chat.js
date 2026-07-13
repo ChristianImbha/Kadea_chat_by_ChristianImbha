@@ -55,14 +55,22 @@ async function loadUsers() {
             usersArray = resJson.data.users;
         }
 
-        const currentUserId = localStorage.getItem("userId");
-        const filteredUsers = usersArray.filter(user => user.id !== currentUserId);
+     // 1. Récupération et nettoyage strict de ton ID connecté
+        let currentUserId = localStorage.getItem("userId");
+        if (currentUserId) {
+            currentUserId = currentUserId.replace(/['"]+/g, '').trim();
+        }
 
-        renderUsersList(filteredUsers); 
-    } catch (error) {
-        console.error("Erreur lors du chargement des utilisateurs :", error);
-    }
-}
+        // 2. Filtrage : On ne garde que les utilisateurs dont l'ID est DIFFÉRENT du mien
+        const filteredUsers = usersArray.filter(user => {
+            if (!user.id) return true;
+            // On nettoie aussi l'ID de l'utilisateur de l'API au cas où
+            const cleanUserId = String(user.id).replace(/['"]+/g, '').trim();
+            return cleanUserId !== currentUserId;
+        });
+
+        // 3. Affichage de la liste propre
+        renderUsersList(filteredUsers);
 
 // 2. FONCTION : Charger et afficher les infos de l'utilisateur connecté avec Fallback
 async function loadMyProfile() {
