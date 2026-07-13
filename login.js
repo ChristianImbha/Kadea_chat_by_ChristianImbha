@@ -18,7 +18,7 @@ if (loginForm) {
 
         if (!emailField || !passwordField) {
             console.error("Champs email ou password introuvables dans le HTML.");
-            alert("Erreur : Les champs du formulaire sont introuvables.");
+            showToast("Erreur : Les champs du formulaire sont introuvables.");
             return;
         }
 
@@ -64,17 +64,19 @@ if (loginForm) {
                 
                 if (userToken) localStorage.setItem("token", userToken);
                 if (userId) localStorage.setItem("userId", userId);
-                
+            showToast("Connexion réussie ! Redirection...", "success");
+            setTimeout(() => {    
                 window.location.href = "chat.html";
+            } , 1000);
             } else {
-                alert(result.message || "Identifiants incorrects.");
+                showToast(result.message || "Identifiants incorrects.", "error");
                 resetLoginButton();
             }
 
         } catch (error) {
             // Déplie ce message dans ta console pour voir la cause exacte du crash !
             console.error("Détail de l'erreur de connexion :", error);
-            alert(`Erreur de connexion : ${error.message || "Impossible de joindre le serveur"}`);
+            showToast(error.message || "Impossible de joindre le serveur.", "error");
             resetLoginButton();
         }
     });
@@ -91,4 +93,53 @@ function resetLoginButton() {
     if (loginBtnText) {
         loginBtnText.textContent = "Se connecter";
     }
+}
+
+// Fonction pour afficher une superbe notification Toast
+function showToast(message, type = "success") {
+    const container = document.getElementById("toast-container");
+    if (!container) return;
+
+    // Création de l'élément toast
+    const toast = document.createElement("div");
+    
+    // Style de base et animation d'entrée
+    toast.className = `flex items-center p-4 rounded-xl shadow-lg border text-sm font-medium transition-all duration-300 transform translate-y-2 opacity-0`;
+
+    // Personnalisation des couleurs selon le type (Succès, Erreur ou Info)
+    if (type === "success") {
+        toast.className += " bg-blue-50 border-blue-200 text-blue-800";
+        toast.innerHTML = `
+            <span class="mr-2 text-lg">✅</span>
+            <div class="flex-1">${message}</div>
+        `;
+    } else if (type === "error") {
+        toast.className += " bg-rose-50 border-rose-200 text-rose-800";
+        toast.innerHTML = `
+            <span class="mr-2 text-lg">❌</span>
+            <div class="flex-1">${message}</div>
+        `;
+    } else {
+        toast.className += " bg-blue-50 border-blue-200 text-blue-800";
+        toast.innerHTML = `
+            <span class="mr-2 text-lg">ℹ️</span>
+            <div class="flex-1">${message}</div>
+        `;
+    }
+
+    // Ajout au conteneur
+    container.appendChild(toast);
+
+    // Déclenchement de l'animation d'apparition fluide
+    setTimeout(() => {
+        toast.classList.remove("translate-y-2", "opacity-0");
+    }, 10);
+
+    // Animation de sortie et suppression automatique après 4 secondes
+    setTimeout(() => {
+        toast.classList.add("translate-y-2", "opacity-0");
+        setTimeout(() => {
+            toast.remove();
+        }, 300); // Temps de la transition de disparition
+    }, 4000);
 }

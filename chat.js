@@ -364,3 +364,52 @@ document.addEventListener("DOMContentLoaded", () => {
     loadUsers(); 
     loadMyProfile();
 });
+
+// Fonction pour afficher une superbe notification Toast
+function showToast(message, type = "success") {
+    const container = document.getElementById("toast-container");
+    if (!container) return;
+
+    // Création de l'élément toast
+    const toast = document.createElement("div");
+    
+    // Style de base et animation d'entrée
+    toast.className = `flex items-center p-4 rounded-xl shadow-lg border text-sm font-medium transition-all duration-300 transform translate-y-2 opacity-0`;
+
+    // Personnalisation des couleurs selon le type (Succès, Erreur ou Info)
+    if (type === "success") {
+        toast.className += " bg-emerald-50 border-emerald-200 text-emerald-800";
+        toast.innerHTML = `
+            <span class="mr-2 text-lg">✅</span>
+            <div class="flex-1">${message}</div>
+        `;
+    } else if (type === "error") {
+        toast.className += " bg-rose-50 border-rose-200 text-rose-800";
+        toast.innerHTML = `
+            <span class="mr-2 text-lg">❌</span>
+            <div class="flex-1">${message}</div>
+        `;
+    } else {
+        toast.className += " bg-blue-50 border-blue-200 text-blue-800";
+        toast.innerHTML = `
+            <span class="mr-2 text-lg">ℹ️</span>
+            <div class="flex-1">${message}</div>
+        `;
+    }
+
+    // Ajout au conteneur
+    container.appendChild(toast);
+
+    // Déclenchement de l'animation d'apparition fluide
+    setTimeout(() => {
+        toast.classList.remove("translate-y-2", "opacity-0");
+    }, 10);
+
+    // Animation de sortie et suppression automatique après 4 secondes
+    setTimeout(() => {
+        toast.classList.add("translate-y-2", "opacity-0");
+        setTimeout(() => {
+            toast.remove();
+        }, 300); // Temps de la transition de disparition
+    }, 4000);
+}
