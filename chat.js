@@ -29,10 +29,11 @@ function formatTime(dateString) {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-// 1. FONCTION : Charger et afficher la liste des conversations (à gauche)
-async function loadConversations() {
+// 1. NOUVELLE FONCTION : Charger et afficher la liste de TOUS les utilisateurs du Workspace
+async function loadUsers() {
     try {
-        const response = await fetch(`${API_URL}/conversations`, {
+        // On appelle la route qui liste les utilisateurs (ex: /users ou /auth/users selon ton API Kadea)
+        const response = await fetch(`${API_URL}/users`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -41,27 +42,25 @@ async function loadConversations() {
             }
         });
 
-        if (!response.ok) throw new Error("Impossible de récupérer les conversations.");
+        if (!response.ok) throw new Error("Impossible de récupérer la liste des utilisateurs.");
         
-        // 1. extrataction de JSON de la réponse dans la variable 'data'
         const data = await response.json();
-        console.log("Données reçues de l'API :", data);
         
-        let conversationsArray = [];
-        
-        // On descend d'un étage dans l'objet de l'API Kadea
+        let usersArray = [];
+        // Sécurisation de la structure comme on a fait avant
         if (data.data) {
-            if (Array.isArray(data.data)) {
-                conversationsArray = data.data;
-            } else if (data.data.conversations && Array.isArray(data.data.conversations)) {
-                conversationsArray = data.data.conversations; // C'est ici que se cache le tableau !
-            }
+            usersArray = Array.isArray(data.data) ? data.data : (data.data.users || []);
         } else if (Array.isArray(data)) {
-            conversationsArray = data;
+            usersArray = data;
         }
-        renderConversationsList(conversationsArray); 
+
+        // On filtre la liste pour NE PAS s'afficher soi-même dans la liste
+        const currentUserId = localStorage.getItem("userId");
+        const filteredUsers = usersArray.filter(user => user.id !== currentUserId);
+
+        renderUsersList(filteredUsers); 
     } catch (error) {
-        console.error("Erreur lors du chargement des conversations :", error);
+        console.error("Erreur lors du chargement des utilisateurs :", error);
     }
 }
 
@@ -151,7 +150,9 @@ async function loadMessages(conversationId) {
 
 // 5. FONCTION : Afficher les messages à l'écran (Ajustée pour Tailwind)
 function renderMessages(messagesData) {
-    const messagesContainer = document.getElementById("messages-container"); // Ajuste l'ID si nécessaire
+    const messagesContainer = document.getElementById("messages-container"); 
+    if (!messagesContainer) return;
+    
     messagesContainer.innerHTML = ""; // On vide le conteneur
 
     // Sécurisation : On cherche le tableau des messages dans la réponse de l'API
@@ -175,51 +176,23 @@ function renderMessages(messagesData) {
         return;
     } 
 
+    // Détermination de ton propre ID (depuis le localStorage pour rester cohérent avec ton application)
+    const currentUserId = localStorage.getItem("userId") || "063b24e5-ef46-400a-a7c9-27735d4101d0"; 
+
     messages.forEach(msg => {
-        1. Créer l'élément conteneur de la bulle
-    const messageElement = document.createElement("div");
-
-    // 2. Récupérer ton propre ID utilisateur connecté (ajuste selon ton code)
-    // Par exemple : const currentUserId = localStorage.getItem("userId") ou une variable globale
-    const currentUserId = "063b24e5-ef46-400a-a7c9-27735d4101d0"; 
-
-    // 3. Vérifier si c'est toi qui as envoyé le message
-    // Note : Selon l'API, ça peut être msg.senderId ou msg.sender.id ou msg.userId
-    const isMe = msg.senderId === currentUserId || (msg.sender && msg.sender.id === currentUserId);
-
-    // 4. Appliquer les classes CSS selon le côté
-    if (isMe) {
-        // Message envoyé (aligné à droite, fond bleu/vert par exemple)
-        messageElement.className = "flex justify-end mb-2";
-        messageElement.innerHTML = `
-            <div class="bg-blue-600 text-white p-3 rounded-lg max-w-xs shadow">
-                <p class="text-sm">${msg.content || msg.text}</p>
-            </div>
-        `;
-    } else {
-        // Message reçu (aligné à gauche, fond gris/blanc)
-        messageElement.className = "flex justify-start mb-2";
-        messageElement.innerHTML = `
-            <div class="bg-gray-200 text-gray-800 p-3 rounded-lg max-w-xs shadow">
-                <p class="text-xs text-gray-500 font-semibold mb-1">${msg.sender?.fullName || "Autre"}</p>
-                <p class="text-sm">${msg.content || msg.text}</p>
-            </div>
-        `;
-    }
-
-    // 5. Ajouter la bulle au conteneur principal
-    messagesContainer.appendChild(messageElement);
-});
-        const isMe = msg.sender?.id === localStorage.getItem("userId"); 
+        // Vérification de l'expéditeur (gestion des différents formats de l'API Kadea)
+        const isMe = msg.senderId === currentUserId || 
+                     (msg.sender && msg.sender.id === currentUserId) || 
+                     msg.userId === currentUserId;
         
         const messageBlock = document.createElement("div");
         // Utilisation de w-full et justification pour bloquer les messages du bon côté
-        messageBlock.className = `flex w-full ${isMe ? 'justify-end' : 'justify-start'}`;
+        messageBlock.className = `flex w-full ${isMe ? 'justify-end' : 'justify-start'} mb-2`;
 
         messageBlock.innerHTML = `
-            <div class="${isMe ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-white text-gray-800 rounded-tl-none border border-gray-100'} max-w-xl text-sm rounded-2xl p-3 shadow-xs flex flex-col">
+            <div class="${isMe ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-white text-gray-800 rounded-tl-none border border-gray-100'} max-w-xl text-sm rounded-2xl p-3 shadow-sm flex flex-col">
                 ${!isMe ? `<p class="font-bold text-xs text-blue-600 mb-0.5">${msg.sender?.fullName || 'Utilisateur'}</p>` : ''}
-                <p class="break-words">${msg.content}</p>
+                <p class="break-words">${msg.content || msg.text || ''}</p>
                 <span class="block text-right text-[10px] ${isMe ? 'text-blue-200' : 'text-gray-400'} mt-1">${formatTime(msg.createdAt)}</span>
             </div>
         `;
@@ -227,7 +200,7 @@ function renderMessages(messagesData) {
         messagesContainer.appendChild(messageBlock);
     });
 
-    // Scroll automatique vers le bas
+    // Scroll automatique vers le bas fluide
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
@@ -273,7 +246,7 @@ if (btnAddConversation && newUserIdInput) {
         const targetUserId = newUserIdInput.value.trim();
 
         if (!targetUserId) {
-            alert("Veuillez coller l'ID d'un utilisateur pour commencer une discussion.");
+            alert("Veuillez mettre l'ID d'un utilisateur pour commencer une discussion.");
             return;
         }
 
