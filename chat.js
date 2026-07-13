@@ -22,13 +22,58 @@ const messageInput = document.getElementById("message-input");
 const messagesContainer = document.getElementById("messages-container");
 const chatPanel = document.getElementById("chat-panel");
 
-// Éléments d'en-tête du chat actif
+// Éléments d'en-tête du chat actif et colonnes
 const activeChatTitle = document.getElementById("active-chat-title");
 const activeChatStatus = document.getElementById("active-chat-status");
 const activeChatAvatar = document.getElementById("active-chat-avatar");
 const colLeft = document.getElementById("col-left");
 const colRight = document.getElementById("col-right");
 const backBtn = document.getElementById("back-to-list-btn");
+
+// ===================================================
+//  LOGIQUE RESPONSIVE : Affichage / Masquage mobile
+// ===================================================
+
+// Affiche le chat à droite et cache la liste de gauche sur mobile
+function showChatColumn() {
+    if (window.innerWidth < 768) { // Point de rupture standard Tailwind md (768px)
+        if (colLeft) colLeft.classList.add("hidden");
+        if (colRight) {
+            colRight.classList.remove("hidden");
+            colRight.classList.add("flex");
+        }
+    }
+}
+
+// Affiche la liste de gauche et cache le chat sur mobile (quand on clique sur Retour)
+function showListColumn() {
+    if (window.innerWidth < 768) {
+        if (colRight) {
+            colRight.classList.add("hidden");
+            colRight.classList.remove("flex");
+        }
+        if (colLeft) colLeft.classList.remove("hidden");
+    }
+}
+
+// Écouteur sur le bouton de retour en arrière
+if (backBtn) {
+    backBtn.addEventListener("click", showListColumn);
+}
+
+// Sécurité : Rétablit l'affichage complet si on élargit la fenêtre du navigateur
+window.addEventListener("resize", () => {
+    if (window.innerWidth >= 768) {
+        if (colLeft) colLeft.classList.remove("hidden");
+        if (colRight) {
+            colRight.classList.remove("hidden");
+            colRight.classList.add("flex");
+        }
+    } else {
+        // Sur mobile, on affiche la liste par défaut
+        showListColumn();
+    }
+});
 
 // Fonction utilitaire pour formater l'heure
 function formatTime(dateString) {
@@ -37,7 +82,6 @@ function formatTime(dateString) {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-// 1. Charger et afficher la liste de TOUS les utilisateurs du Workspace
 // 1. Charger et afficher la liste de TOUS les utilisateurs du Workspace sauf soi-même
 async function loadUsers() {
     try {
@@ -55,7 +99,6 @@ async function loadUsers() {
         const resJson = await response.json();
         
         let usersArray = [];
-        // On extrait le tableau d'utilisateurs selon la structure de l'API
         if (resJson.data && Array.isArray(resJson.data.users)) {
             usersArray = resJson.data.users;
         } else if (Array.isArray(resJson.data)) {
@@ -64,24 +107,17 @@ async function loadUsers() {
             usersArray = resJson;
         }
 
-        // 1. Récupération et nettoyage strict de ton propre ID connecté
         let currentUserId = localStorage.getItem("userId");
         if (currentUserId) {
             currentUserId = currentUserId.replace(/['"]+/g, '').trim();
         }
 
-        // 2. Utilisation de .filter() pour enlever ton profil de la liste de gauche
         const filteredUsers = usersArray.filter(user => {
-            if (!user.id) return true; // Si l'utilisateur n'a pas d'ID, on le garde par sécurité
-            
-            // On nettoie aussi l'ID de l'utilisateur de l'API pour être sûr de la comparaison
+            if (!user.id) return true; 
             const cleanUserId = String(user.id).replace(/['"]+/g, '').trim();
-            
-            // On ne garde que ceux qui sont DIFFÉRENTS de moi
             return cleanUserId !== currentUserId;
         });
 
-        // 3. On injecte la liste filtrée dans le HTML
         renderUsersList(filteredUsers); 
 
     } catch (error) {
@@ -119,14 +155,10 @@ async function loadMyProfile() {
         const resJson = await response.json();
         const userData = resJson.data || resJson;
         
-        //  On extrait l'ID renvoyé par l'API
         const myId = userData.id || userData._id;
 
         if (myId) {
-            // On l'écrase proprement dans le stockage local pour les comparaisons futures
             localStorage.setItem("userId", myId);
-            
-            // On met à jour l'affichage de l'en-tête à gauche avec le vrai ID
             if (myName) {
                 myName.textContent = myId;
             }
@@ -157,7 +189,7 @@ function renderUsersList(users) {
     users.forEach(user => {
         const userElement = document.createElement("div");
         userElement.dataset.targetUserId = user.id;
-        userElement.dataset.conversationId = user.id; // FIX : Pour la coloration de l'élément actif
+        userElement.dataset.conversationId = user.id; 
         userElement.className = `conversation-item flex items-center space-x-3 p-3 hover:bg-slate-100 cursor-pointer rounded-xl transition`;
         
         const displayAvatar = user.avatarUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.id}`;
@@ -194,7 +226,6 @@ async function handleStartChat(targetUserId, displayName, displayAvatar) {
             })
         });
 
-        // L'API peut renvoyer 200 (existe déjà) ou 201 (créée à l'instant)
         console.log("Statut HTTP reçu de l'API :", response.status);
 
         if (!response.ok) throw new Error(`Erreur API : Statut ${response.status}`);
@@ -202,7 +233,6 @@ async function handleStartChat(targetUserId, displayName, displayAvatar) {
         const result = await response.json();
         console.log("Données reçues de la conversation :", result);
         
-        // Extraction de l'ID avec une tolérance maximale pour toutes les structures d'API
         let conversationId = null;
         if (result.data) {
             conversationId = result.data.id || (result.data.conversation && result.data.conversation.id);
@@ -213,7 +243,6 @@ async function handleStartChat(targetUserId, displayName, displayAvatar) {
         console.log("ID final extrait pour l'affichage :", conversationId);
 
         if (conversationId) {
-            // Déclenchement de l'affichage dans le panneau de droite
             selectConversation({
                 id: conversationId,
                 name: displayName,
@@ -246,6 +275,9 @@ async function selectConversation(conv) {
     });
 
     await loadMessages(conv.id);
+
+    // 🚀 BASCULE MOBILE : Une fois le chat configuré, on l'affiche et on cache les contacts
+    showChatColumn();
 }
 
 // 6. FONCTION : Récupérer les messages de la conversation active
@@ -275,7 +307,6 @@ function renderMessages(messagesData) {
     
     messagesContainer.innerHTML = ""; 
 
-    // Sécurisation : On cherche le tableau des messages dans la réponse de l'API
     let messages = [];
     if (Array.isArray(messagesData)) {
         messages = messagesData;
@@ -294,10 +325,9 @@ function renderMessages(messagesData) {
         return;
     } 
 
-    // Récupération et nettoyage de ton ID utilisateur connecté
     let currentUserId = localStorage.getItem("userId");
     if (currentUserId) {
-        currentUserId = currentUserId.replace(/['"]+/g, '').trim(); // Enlève d'éventuels guillemets résiduels
+        currentUserId = currentUserId.replace(/['"]+/g, '').trim(); 
     }
 
    messages.forEach(msg => {
@@ -306,10 +336,7 @@ function renderMessages(messagesData) {
             senderId = String(senderId).replace(/['"]+/g, '').trim();
         }
         
-        // Extraction du nom de l'expéditeur pour le secours visuel
         const senderName = msg.sender?.fullName || '';
-        
-        // SÉCURITÉ : C'est moi si l'ID correspond OU si le nom complet est le mien
         const isMe = (senderId === currentUserId) || (senderName === "Christian Imbha");
         
         const messageBlock = document.createElement("div");
@@ -326,7 +353,6 @@ function renderMessages(messagesData) {
         messagesContainer.appendChild(messageBlock);
     });
 
-    // Scroll automatique vers le bas fluide
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
@@ -373,13 +399,10 @@ function showToast(message, type = "success") {
     const container = document.getElementById("toast-container");
     if (!container) return;
 
-    // Création de l'élément toast
     const toast = document.createElement("div");
     
-    // Style de base et animation d'entrée
     toast.className = `flex items-center p-4 rounded-xl shadow-lg border text-sm font-medium transition-all duration-300 transform translate-y-2 opacity-0`;
 
-    // Personnalisation des couleurs selon le type (Succès, Erreur ou Info)
     if (type === "success") {
         toast.className += " bg-emerald-50 border-emerald-200 text-emerald-800";
         toast.innerHTML = `
@@ -400,19 +423,16 @@ function showToast(message, type = "success") {
         `;
     }
 
-    // Ajout au conteneur
     container.appendChild(toast);
 
-    // Déclenchement de l'animation d'apparition fluide
     setTimeout(() => {
         toast.classList.remove("translate-y-2", "opacity-0");
     }, 10);
 
-    // Animation de sortie et suppression automatique après 4 secondes
     setTimeout(() => {
         toast.classList.add("translate-y-2", "opacity-0");
         setTimeout(() => {
             toast.remove();
-        }, 300); // Temps de la transition de disparition
+        }, 300);
     }, 4000);
 }
