@@ -26,6 +26,9 @@ const chatPanel = document.getElementById("chat-panel");
 const activeChatTitle = document.getElementById("active-chat-title");
 const activeChatStatus = document.getElementById("active-chat-status");
 const activeChatAvatar = document.getElementById("active-chat-avatar");
+const colLeft = document.getElementById("col-left");
+const colRight = document.getElementById("col-right");
+const backBtn = document.getElementById("back-to-list-btn");
 
 // Fonction utilitaire pour formater l'heure
 function formatTime(dateString) {
