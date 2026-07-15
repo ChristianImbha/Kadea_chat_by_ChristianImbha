@@ -401,7 +401,10 @@ if (messageForm) {
 
 async function deleteMessage(messageId) {
     // Demande de confirmation à l'utilisateur (bonne pratique UX)
-    if (!confirm("Voulez-vous vraiment supprimer ce message ?")) return;
+    showToast("Action requise : Confirmez la suppression", "info");
+    if (!confirm("Voulez-vous vraiment supprimer ce message ?"))
+        showToast("Action requise : Confirmez la suppression", "info");
+        return;
 
     try {
         const response = await fetch(`${API_URL}/messages/${messageId}`, {
