@@ -21,6 +21,7 @@ const messageForm = document.getElementById("message-form");
 const messageInput = document.getElementById("message-input");
 const messagesContainer = document.getElementById("messages-container");
 const chatPanel = document.getElementById("chat-panel");
+const deleteConvBtn = document.getElementById("delete-conv-btn");
 
 // Éléments d'en-tête du chat actif et colonnes
 const activeChatTitle = document.getElementById("active-chat-title");
@@ -338,15 +339,23 @@ function renderMessages(messagesData) {
         
         const senderName = msg.sender?.fullName || '';
         const isMe = (senderId === currentUserId) || (senderName === "Christian Imbha");
+        const msgId = msg.id || msg._id; // On récupère l'ID du message
         
         const messageBlock = document.createElement("div");
-        messageBlock.className = `flex w-full ${isMe ? 'justify-end' : 'justify-start'} mb-2`;
+        messageBlock.className = `flex w-full ${isMe ? 'justify-end' : 'justify-start'} mb-2 group`; // "group" pour le survol CSS
 
         messageBlock.innerHTML = `
-            <div class="${isMe ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-white text-gray-800 rounded-tl-none border border-gray-100'} max-w-xl text-sm rounded-2xl p-3 shadow-sm flex flex-col">
-                ${!isMe ? `<p class="font-bold text-xs text-blue-600 mb-0.5">${senderName || 'Utilisateur'}</p>` : ''}
-                <p class="break-words">${msg.content || msg.text || ''}</p>
-                <span class="block text-right text-[10px] ${isMe ? 'text-blue-200' : 'text-gray-400'} mt-1">${formatTime(msg.createdAt)}</span>
+            <div class="flex items-center space-x-2">
+                ${isMe && msgId ? `
+                    <button onclick="deleteMessage('${msgId}')" class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition text-xs p-1" title="Supprimer">
+                        🗑️
+                    </button>
+                ` : ''}
+                <div class="${isMe ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-white text-gray-800 rounded-tl-none border border-gray-100'} max-w-xl text-sm rounded-2xl p-3 shadow-sm flex flex-col">
+                    ${!isMe ? `<p class="font-bold text-xs text-blue-600 mb-0.5">${senderName || 'Utilisateur'}</p>` : ''}
+                    <p class="break-words">${msg.content || msg.text || ''}</p>
+                    <span class="block text-right text-[10px] ${isMe ? 'text-blue-200' : 'text-gray-400'} mt-1">${formatTime(msg.createdAt)}</span>
+                </div>
             </div>
         `;
 
@@ -388,6 +397,70 @@ if (messageForm) {
     });
 }
 
+// fonction  SUPPRESSION D'UN MESSAGE
+
+async function deleteMessage(messageId) {
+    // Demande de confirmation à l'utilisateur (bonne pratique UX)
+    if (!confirm("Voulez-vous vraiment supprimer ce message ?")) return;
+
+    try {
+        const response = await fetch(`${API_URL}/messages/${messageId}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "x-api-key": Workspace_API_KEY
+            }
+        });
+
+        if (response.ok) {
+            showToast("Message supprimé avec succès !", "success");
+            // On recharge l'historique pour faire disparaître le message de l'écran
+            await loadMessages(activeConversationId);
+        } else {
+            showToast("Impossible de supprimer ce message.", "error");
+        }
+    } catch (error) {
+        console.error("Erreur lors de la suppression du message :", error);
+        showToast("Une erreur est survenue.", "error");
+    }
+}
+
+//  SUPPRESSION D'UNE CONVERSATION COMPLÈTE
+// ===================================================
+async function deleteConversation(conversationId) {
+    if (!confirm("Attention ! Voulez-vous vraiment supprimer toute cette conversation ? Cette action est irréversible.")) return;
+
+    try {
+        const response = await fetch(`${API_URL}/conversations/${conversationId}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "x-api-key": Workspace_API_KEY
+            }
+        });
+
+        if (response.ok) {
+            showToast("Conversation supprimée.", "success");
+            
+            // On réinitialise l'état
+            activeConversationId = null;
+            
+            // On cache le panneau de chat
+            if (chatPanel) chatPanel.classList.add("hidden");
+            
+            // On recharge la liste des contacts à gauche
+            await loadUsers();
+            
+            // Sur mobile, on revient à l'affichage de la liste
+            showListColumn();
+        } else {
+            showToast("Impossible de supprimer la conversation.", "error");
+        }
+    } catch (error) {
+        console.error("Erreur lors de la suppression de la conversation :", error);
+        showToast("Une erreur est survenue.", "error");
+    }
+}
 // Initialisation au chargement de la page
 document.addEventListener("DOMContentLoaded", () => {
     loadUsers(); 
