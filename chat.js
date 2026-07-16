@@ -1,6 +1,16 @@
 // configuration de l'API
 const API_URL = "https://kadea-chat-api.onrender.com"; 
 const Workspace_API_KEY = 'wksp_c3e1fb2ba091b7e4a9697b611e1d7168';
+if (response.ok) {
+    const resJson = await response.json();
+    const userData = resJson.data || resJson;
+
+    // Sauvegarde des infos pour la page profil
+    localStorage.setItem("userFullName", userData.fullName || "");
+    localStorage.setItem("userEmail", userData.email || "");
+    localStorage.setItem("userBio", userData.bio || "Disponible");
+    localStorage.setItem("userAvatarUrl", userData.avatarUrl || "");
+}
 
 // Éléments du profil utilisateur connecté
 const myAvatar = document.getElementById("active-user-avatar"); 
@@ -277,7 +287,7 @@ async function selectConversation(conv) {
 
     await loadMessages(conv.id);
 
-    // 🚀 BASCULE MOBILE : Une fois le chat configuré, on l'affiche et on cache les contacts
+    //BASCULE MOBILE : Une fois le chat configuré, on l'affiche et on cache les contacts
     showChatColumn();
 }
 

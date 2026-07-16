@@ -1,20 +1,50 @@
-// Configuration de l'API 
+// ==========================================
+// CONFIGURATION DE L'API 
+// ==========================================
 const API_URL = "https://kadea-chat-api.onrender.com"; 
 const token = localStorage.getItem("token");
-const Workspace_API_KEY = "ta_cle_api";
+const Workspace_API_KEY = 'wksp_c3e1fb2ba091b7e4a9697b611e1d7168';
+
 document.addEventListener("DOMContentLoaded", () => {
-    // Éléments pour l'avatar
+    // Éléments du DOM
     const changeAvatarTrigger = document.getElementById("change-avatar-trigger");
     const avatarInput = document.getElementById("avatar-input");
     const profileAvatar = document.getElementById("profile-page-avatar");
-    
-    // Éléments du formulaire
-    const profileForm = document.getElementById("profile-form");
     const profileNameInput = document.getElementById("profile-name");
     const profileStatusInput = document.getElementById("profile-status");
+    const profileForm = document.getElementById("profile-form");
     const alertBox = document.getElementById("alert-box");
 
-    // Charger les informations existantes au démarrage
+    // ==========================================
+    // RÉCUPÉRATION ET AFFICHAGE DIRECT DU PROFIL
+    // ==========================================
+    function loadUserData() {
+        // 1. On récupère les données sauvegardées dans le localStorage
+        const savedName = localStorage.getItem("userFullName");
+        const savedBio = localStorage.getItem("userBio");
+        const savedAvatar = localStorage.getItem("userAvatarUrl");
+
+        // 2. On remplit les champs de saisie (Inputs)
+        if (profileNameInput && savedName) {
+            profileNameInput.value = savedName;
+        }
+        
+        if (profileStatusInput && savedBio) {
+            profileStatusInput.value = savedBio;
+        }
+
+        // 3. On affiche la photo de profil
+        if (profileAvatar) {
+            if (savedAvatar && savedAvatar.trim() !== "") {
+                profileAvatar.src = savedAvatar;
+            } else {
+                const nameSeed = savedName || "default";
+                profileAvatar.src = `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(nameSeed)}`;
+            }
+        }
+    }
+
+    // Exécuter la récupération dès le départ
     loadUserData();
 
     // ==========================================
@@ -32,7 +62,9 @@ document.addEventListener("DOMContentLoaded", () => {
             // Prévisualisation visuelle immédiate (locale)
             const reader = new FileReader();
             reader.onload = (event) => {
-                profileAvatar.src = event.target.result;
+                if (profileAvatar) {
+                    profileAvatar.src = event.target.result;
+                }
             };
             reader.readAsDataURL(file);
 
@@ -46,18 +78,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     async function uploadAvatar(file) {
         const formData = new FormData();
-        formData.append("avatar", file); // Remplace "avatar" par le nom attendu par ton API (ex: "file", "image")
+        formData.append("avatar", file); 
 
         showAlert("Téléchargement de l'image...", "info");
 
         try {
-            const response = await fetch(`${API_URL}/users/update-avatar`, { // Remplace par ton endpoint exact d'upload
+            const response = await fetch(`${API_URL}/auth/me`, { 
                 method: "POST", 
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     "x-api-key": Workspace_API_KEY
-                    // IMPORTANT : Ne surtout pas mettre "Content-Type" : "application/json" !
-                    // Le navigateur doit définir lui-même le format FormData (multipart/form-data)
                 },
                 body: formData
             });
@@ -66,10 +96,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 const data = await response.json();
                 showAlert("Photo de profil mise à jour avec succès !", "success");
                 
-                // Mettre à jour le stockage local pour que la page chat.html se mette aussi à jour
                 if (data.avatarUrl) {
-                    localStorage.setItem("userAvatar", data.avatarUrl);
-                    profileAvatar.src = data.avatarUrl;
+                    localStorage.setItem("userAvatarUrl", data.avatarUrl);
+                    if (profileAvatar) profileAvatar.src = data.avatarUrl;
                 }
             } else {
                 showAlert("Erreur lors de la sauvegarde de l'image sur le serveur.", "error");
@@ -81,35 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 3. CHARGEMENT INITIAL DES DONNÉES UTILISATEUR
-    // ==========================================
-    async function loadUserData() {
-        try {
-            const response = await fetch(`${API_URL}/auth/me`, {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "x-api-key": Workspace_API_KEY
-                }
-            });
-
-            if (response.ok) {
-                const userData = await response.json();
-                const user = userData.data || userData;
-
-                if (profileNameInput) profileNameInput.value = user.fullName || "";
-                if (profileStatusInput) profileStatusInput.value = user.status || "Disponible";
-                if (profileAvatar && user.avatarUrl) {
-                    profileAvatar.src = user.avatarUrl;
-                }
-            }
-        } catch (error) {
-            console.error("Erreur lors du chargement initial :", error);
-        }
-    }
-
-    // ==========================================
-    // 4. SAUVEGARDE DU NOM ET DU STATUT (FORMULAIRE)
+    // 3. SAUVEGARDE DU NOM ET DU STATUT (FORMULAIRE)
     // ==========================================
     if (profileForm) {
         profileForm.addEventListener("submit", async (e) => {
@@ -118,13 +119,13 @@ document.addEventListener("DOMContentLoaded", () => {
             showAlert("Sauvegarde des informations...", "info");
 
             const updatedData = {
-                fullName: profileNameInput.value,
-                status: profileStatusInput.value
+                fullName: profileNameInput ? profileNameInput.value : "",
+                status: profileStatusInput ? profileStatusInput.value : ""
             };
 
             try {
-                const response = await fetch(`${API_URL}/users/update`, { // Remplace par ton endpoint de mise à jour des infos
-                    method: "PUT", // ou PATCH ou POST selon l'API
+                const response = await fetch(`${API_URL}/users/update`, { 
+                    method: "PUT", 
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`,
@@ -135,6 +136,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (response.ok) {
                     showAlert("Informations enregistrées !", "success");
+                    // On met à jour les données locales pour les futurs rechargements
+                    localStorage.setItem("userFullName", updatedData.fullName);
+                    localStorage.setItem("userBio", updatedData.status);
                 } else {
                     showAlert("Erreur lors de la mise à jour du profil.", "error");
                 }
@@ -146,25 +150,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 5. FONCTION D'AFFICHAGE DES ALERTES (ALERT-BOX)
+    // 4. FONCTION D'AFFICHAGE DES ALERTES (ALERT-BOX)
     // ==========================================
     function showAlert(message, type) {
         if (!alertBox) return;
         
         alertBox.textContent = message;
-        alertBox.className = "p-3 rounded text-sm text-center font-medium mt-4 block"; // Réinitialise
+        alertBox.className = "p-3 rounded text-sm text-center font-medium mt-4 block"; 
 
         if (type === "success") {
             alertBox.classList.add("bg-green-100", "text-green-800");
         } else if (type === "error") {
             alertBox.classList.add("bg-red-100", "text-red-800");
         } else {
-            alertBox.classList.add("bg-blue-100", "text-blue-800"); // Info/Loading
+            alertBox.classList.add("bg-blue-100", "text-blue-800"); 
         }
 
         alertBox.classList.remove("hidden");
 
-        // Fait disparaître les messages de succès ou d'erreur après 3 secondes
         if (type !== "info") {
             setTimeout(() => {
                 alertBox.classList.add("hidden");
