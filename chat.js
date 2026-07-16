@@ -631,6 +631,55 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+//  CHARGER LES INFOS DE L'UTILISATEUR CONNECTÉ
+// ===================================================
+async function loadCurrentUser() {
+    const avatarImg = document.getElementById("active-user-avatar");
+    const nameSpan = document.getElementById("active-user-name");
+
+    try {
+        const response = await fetch(`${API_URL}/auth/me`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+                "x-api-key": Workspace_API_KEY
+            }
+        });
+
+        if (response.ok) {
+            const resJson = await response.json();
+            const userData = resJson.data || resJson;
+
+            // 1. Mise à jour de l'avatar du bouton "Mon Profil" à gauche
+            if (avatarImg && userData.avatarUrl) {
+                avatarImg.src = userData.avatarUrl;
+            } else if (avatarImg) {
+                // Image par défaut si l'utilisateur n'a pas d'avatar
+                avatarImg.src = `https://api.dicebear.com/7.x/adventurer/svg?seed=${userData.username || 'default'}`;
+            }
+
+            // 2. Mise à jour du nom d'affichage à gauche
+            if (nameSpan) {
+                nameSpan.textContent = userData.fullName || "Utilisateur";
+            }
+
+            // On stocke temporairement l'image dans le localStorage pour la page profile.html
+            localStorage.setItem("userAvatar", userData.avatarUrl || "");
+            localStorage.setItem("userName", userData.fullName || "");
+            localStorage.setItem("userEmail", userData.email || "");
+
+        }
+    } catch (error) {
+        console.error("Erreur lors de la récupération de l'utilisateur connecté :", error);
+    }
+}
+
+// Appelle la fonction au chargement initial de ton script
+document.addEventListener("DOMContentLoaded", () => {
+    loadCurrentUser();
+});
 // Initialisation au chargement de la page
 document.addEventListener("DOMContentLoaded", () => {
     loadUsers(); 

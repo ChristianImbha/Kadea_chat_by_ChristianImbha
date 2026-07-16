@@ -53,16 +53,17 @@
             </div>
         </div>
         <div class="flex-1 overflow-y-auto p-6 space-y-6">
-            
-            <div class="flex flex-col items-center justify-center relative group">
-                <div class="relative w-40 h-40 rounded-full overflow-hidden border-4 border-gray-200 shadow-md">
-                    <img id="profile-avatar" src="https://via.placeholder.com/150" alt="Avatar Utilisateur" class="w-full h-full object-cover">
-                    <label for="avatar-input" class="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity duration-200">
-                        <i class="fas fa-camera text-2xl mb-1"></i>
-                        <span class="text-xs font-medium">CHANGER LA PHOTO</span>
-                    </label>
+            <div class="flex flex-col items-center text-center mb-8">
+                <div class="relative group cursor-pointer" id="change-avatar-trigger">
+                    <img id="profile-page-avatar" src="https://via.placeholder.com/120" alt="Avatar" class="w-28 h-28 rounded-full border-4 border-white object-cover shadow-lg group-hover:opacity-80 transition">
+                      <!-- Icône overlay au survol -->
+                    <div class="absolute inset-0 flex items-center justify-center bg-black/30 rounded-full opacity-0 group-hover:opacity-100 transition">
+                        <i data-lucide="camera" class="w-6 h-6 text-white"></i>
                 </div>
-                <input type="file" id="avatar-input" accept="image/*" class="hidden">
+                    <!-- Input file masqué -->
+                    <input type="file" id="avatar-input" accept="image/*" class="hidden">
+            </div>
+                   
             
                 <form id="profile-form" class="space-y-5">
                     <div>
@@ -93,8 +94,7 @@
             <div id="alert-box" class="hidden p-3 rounded text-sm text-center font-medium"></div>
 
         </div>
-    </div>
-                
+    </div>            
     
 
     </main>
@@ -102,5 +102,6 @@
      <script>
         lucide.createIcons();
     </script>
+    <script>"profil.js"</script>
 </body>
 </html>
