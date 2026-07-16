@@ -400,11 +400,11 @@ if (messageForm) {
 // fonction  SUPPRESSION D'UN MESSAGE
 
 async function deleteMessage(messageId) {
-    // Demande de confirmation à l'utilisateur (bonne pratique UX)
-    showToast("Action requise : Confirmez la suppression", "info");
-    if (!confirm("Voulez-vous vraiment supprimer ce message ?"))
-        showToast("Action requise : Confirmez la suppression", "info");
+    // 1. On demande directement la confirmation (pas besoin de toast d'info avant)
+    if (!confirm("Voulez-vous vraiment supprimer ce message ?")) {
+        showToast("Suppression annulée", "info");
         return;
+    }
 
     try {
         const response = await fetch(`${API_URL}/messages/${messageId}`, {
@@ -416,8 +416,8 @@ async function deleteMessage(messageId) {
         });
 
         if (response.ok) {
+            // 2. On affiche le toast de succès uniquement après la réussite
             showToast("Message supprimé avec succès !", "success");
-            // On recharge l'historique pour faire disparaître le message de l'écran
             await loadMessages(activeConversationId);
         } else {
             showToast("Impossible de supprimer ce message.", "error");
