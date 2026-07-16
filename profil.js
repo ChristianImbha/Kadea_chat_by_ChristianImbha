@@ -1,7 +1,7 @@
 // ==========================================
 // CONFIGURATION DE L'API 
 // ==========================================
-const API_URL = "https://kadea-chat-api.onrender.com"; 
+const API_URL = 'https://kadea-chat-api.onrender.com'; 
 const token = localStorage.getItem("token");
 const Workspace_API_KEY = 'wksp_c3e1fb2ba091b7e4a9697b611e1d7168';
 
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     // 2. ENVOI DE L'IMAGE À L'API
     // ==========================================
-    async function uploadAvatar(file) {
+   async function uploadAvatar(file) {
         const formData = new FormData();
         formData.append("avatar", file); 
 
@@ -94,21 +94,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (response.ok) {
                 const data = await response.json();
+                console.log("Réponse API reçue :", data); // 💡 Regarde ta console de navigateur pour inspecter ce que l'API renvoie !
+                
                 showAlert("Photo de profil mise à jour avec succès !", "success");
                 
-                if (data.avatarUrl) {
-                    localStorage.setItem("userAvatarUrl", data.avatarUrl);
-                    if (profileAvatar) profileAvatar.src = data.avatarUrl;
+                // On essaie de trouver l'URL n'importe où dans la réponse
+                const newUserAvatar = data.avatarUrl || 
+                                     data.avatar || 
+                                     (data.user && data.user.avatarUrl) || 
+                                     (data.user && data.user.avatar) || 
+                                     (data.data && data.data.avatarUrl);
+                
+                if (newUserAvatar) {
+                    // On enregistre partout pour éviter tout conflit de clé !
+                    localStorage.setItem("userAvatarUrl", newUserAvatar);
+                    localStorage.setItem("userAvatar", newUserAvatar);
+                    localStorage.setItem("avatar", newUserAvatar);
+                    
+                    if (profileAvatar) profileAvatar.src = newUserAvatar;
                 }
             } else {
                 showAlert("Erreur lors de la sauvegarde de l'image sur le serveur.", "error");
             }
         } catch (error) {
             console.error("Erreur d'envoi de la photo :", error);
-            showAlert("Impossible de se connecter au serveur pour envoyer l'image.", "error");
+            showAlert("Impossible de se connecter au serveur.", "error");
         }
     }
-
     // ==========================================
     // 3. SAUVEGARDE DU NOM ET DU STATUT (FORMULAIRE)
     // ==========================================
@@ -124,8 +136,8 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
             try {
-                const response = await fetch(`${API_URL}/users/update`, { 
-                    method: "PUT", 
+                const response = await fetch(`${API_URL}/auth/me`, { 
+                    method: "POST", 
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`,
