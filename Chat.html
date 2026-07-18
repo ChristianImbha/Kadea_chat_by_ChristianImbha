@@ -15,22 +15,42 @@
     <!-- BARRE LATÉRALE : Masquée sur mobile, visible sur tablette/PC -->
     <aside class="hidden md:flex w-16 bg-white border-r border-gray-200 flex-col justify-between items-center py-4 shrink-0">
         <div class="flex flex-col gap-6 items-center w-full">
-            <div class="text-blue-600 p-2 rounded-xl bg-blue-50">
-                <i data-lucide="message-square" class="w-6 h-6"></i>
-            </div>
-            <div class="text-gray-400 hover:text-gray-600 p-2 cursor-pointer transition">
-                <i data-lucide="users" class="w-6 h-6"></i>
-            </div>
-            <div class="text-gray-400 hover:text-gray-600 p-2 cursor-pointer transition">
-                <i data-lucide="phone" class="w-6 h-6"></i>
-            </div>
-            <div class="text-gray-400 hover:text-gray-600 p-2 cursor-pointer transition">
-                <i data-lucide="folder-archive" class="w-6 h-6"></i>
-            </div>
+            <button class="group relative p-2.5 md:p-3 text-slate-400 cursor-not-allowed rounded-xl transition flex items-center justify-center hidden sm:flex">
+                <i data-lucide="message-square-more" class="w-5 h-5 md:w-6 md:h-6"></i>
+                <!-- Bulle d'information au survol -->
+                <span class="absolute left-16 md:left-20 bg-slate-800 text-white text-[11px] font-medium px-2 py-1 rounded shadow-md opacity-0 group-hover:opacity-100 transition whitespace-nowrap pointer-events-none z-50">
+                    Cette fonctionnalité n'est pas disponible pour l'instant
+                </span>
+           </button>
+             <button class="group relative p-2.5 md:p-3 text-slate-400 cursor-not-allowed rounded-xl transition flex items-center justify-center hidden sm:flex">
+                <i data-lucide="users" class="w-5 h-5 md:w-6 md:h-6"></i>
+                <!-- Bulle d'information au survol -->
+                <span class="absolute left-16 md:left-20 bg-slate-800 text-white text-[11px] font-medium px-2 py-1 rounded shadow-md opacity-0 group-hover:opacity-100 transition whitespace-nowrap pointer-events-none z-50">
+                    Cette fonctionnalité n'est pas disponible pour l'instant
+                </span>
+           </button>
+            <button class="group relative p-2.5 md:p-3 text-slate-400 cursor-not-allowed rounded-xl transition flex items-center justify-center">
+                <i data-lucide="phone" class="w-5 h-5 md:w-6 md:h-6"></i>
+                <!-- Bulle d'information au survol -->
+                <span class="absolute left-16 md:left-20 bg-slate-800 text-white text-[11px] font-medium px-2 py-1 rounded shadow-md opacity-0 group-hover:opacity-100 transition whitespace-nowrap pointer-events-none z-50">
+                    Cette fonctionnalité n'est pas disponible pour l'instant
+                </span>
+            </button>
+            <button class="group relative p-2.5 md:p-3 text-slate-400 cursor-not-allowed rounded-xl transition flex items-center justify-center hidden sm:flex">
+                <i data-lucide="folder-archive" class="w-5 h-5 md:w-6 md:h-6"></i>
+                <!-- Bulle d'information au survol -->
+                <span class="absolute left-16 md:left-20 bg-slate-800 text-white text-[11px] font-medium px-2 py-1 rounded shadow-md opacity-0 group-hover:opacity-100 transition whitespace-nowrap pointer-events-none z-50">
+                    Cette fonctionnalité n'est pas disponible pour l'instant
+                </span>
+            </button>
         </div>
-        <div class="text-gray-400 hover:text-gray-600 p-2 cursor-pointer transition">
-            <i data-lucide="settings" class="w-6 h-6"></i>
-        </div>
+        <button class="group relative p-2.5 md:p-3 text-slate-400 cursor-not-allowed rounded-xl transition flex items-center justify-center hidden sm:flex">
+            <i data-lucide="settings" class="w-5 h-5 md:w-6 md:h-6"></i>
+            <!-- Bulle d'information au survol -->
+            <span class="absolute left-16 md:left-20 bg-slate-800 text-white text-[11px] font-medium px-2 py-1 rounded shadow-md opacity-0 group-hover:opacity-100 transition whitespace-nowrap pointer-events-none z-50">
+                Cette fonctionnalité n'est pas disponible pour l'instant
+            </span>
+       </button>
     </aside>
 
     <!-- SECTION GAUCHE : Liste des conversations (Prend tout l'écran sur mobile) -->
@@ -72,7 +92,7 @@
         <header class="h-16 bg-white border-b border-gray-200 flex justify-between items-center px-6 shrink-0">
             <div class="flex items-center gap-3">
                 
-                <!-- 🚀 BOUTON RETOUR : Visible uniquement sur mobile -->
+                <!--BOUTON RETOUR : Visible uniquement sur mobile -->
                 <button id="back-to-list-btn" class="md:hidden mr-2 p-1.5 text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition duration-200">
                     <i data-lucide="arrow-left" class="w-6 h-6"></i>
                 </button>
@@ -97,12 +117,20 @@
 
         <!-- Formulaire d'envoi de message -->
         <form id="message-form" class="p-4 bg-white border-t border-gray-200 flex items-center gap-3">
-            <button type="button" class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-50 transition">
-                <i data-lucide="plus" class="w-6 h-6"></i>
-            </button>
-            <button type="button" class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-50 transition mr-1">
-                <i data-lucide="smile" class="w-6 h-6"></i>
-            </button>
+             <button class="group relative p-2.5 md:p-3 text-slate-400 cursor-not-allowed rounded-xl transition flex items-center justify-center hidden sm:flex">
+                <i data-lucide="plus" class="w-5 h-5 md:w-6 md:h-6"></i>
+                <!-- Bulle d'information au survol -->
+                <span class="absolute left-16 md:left-20 bg-slate-800 text-white text-[11px] font-medium px-2 py-1 rounded shadow-md opacity-0 group-hover:opacity-100 transition whitespace-nowrap pointer-events-none z-50">
+                    Cette fonctionnalité n'est pas disponible pour l'instant
+                </span>
+           </button>
+             <button class="group relative p-2.5 md:p-3 text-slate-400 cursor-not-allowed rounded-xl transition flex items-center justify-center hidden sm:flex">
+                <i data-lucide="smile" class="w-5 h-5 md:w-6 md:h-6"></i>
+                <!-- Bulle d'information au survol -->
+                <span class="absolute left-16 md:left-20 bg-slate-800 text-white text-[11px] font-medium px-2 py-1 rounded shadow-md opacity-0 group-hover:opacity-100 transition whitespace-nowrap pointer-events-none z-50">
+                    Cette fonctionnalité n'est pas disponible pour l'instant
+                </span>
+           </button>
             
             <div class="flex-1 relative flex items-center">
                 <input type="text" id="message-input" autocomplete="off" placeholder="Tapez votre message..." class="w-full bg-gray-50 border border-gray-200 text-sm pl-4 pr-12 py-3 rounded-2xl focus:outline-none focus:border-blue-500 focus:bg-white transition">
