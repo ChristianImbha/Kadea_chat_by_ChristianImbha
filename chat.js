@@ -4,6 +4,19 @@
 const API_URL = "https://kadea-chat-api.onrender.com"; 
 const Workspace_API_KEY = 'wksp_c3e1fb2ba091b7e4a9697b611e1d7168';
 
+// Fonction de sécurité pour empêcher les failles XSS
+function escapeHTML(str) {
+    if (!str) return "";
+    return str.replace(/[&<>'"]/g, 
+        tag => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            "'": '&#39;',
+            '"': '&quot;'
+        }[tag] || tag)
+    );
+}
 // Sécurisation de la page : Vérification immédiate du Token
 const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 if (!token) {
@@ -331,8 +344,7 @@ function renderMessages(messagesData) {
         const senderName = msg.sender?.fullName || '';
         const isMe = (senderId === currentUserId) || (senderName === "Christian Imbha");
         const msgId = msg.id || msg._id;
-        
-        const messageBlock = document.createElement("div");
+                const messageBlock = document.createElement("div");
         messageBlock.className = `flex w-full ${isMe ? 'justify-end' : 'justify-start'} mb-2 group`;
 
         messageBlock.innerHTML = `
@@ -344,7 +356,7 @@ function renderMessages(messagesData) {
                 ` : ''}
                 <div class="${isMe ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-white text-gray-800 rounded-tl-none border border-gray-100'} max-w-xl text-sm rounded-2xl p-3 shadow-sm flex flex-col">
                     ${!isMe ? `<p class="font-bold text-xs text-blue-600 mb-0.5">${senderName || 'Utilisateur'}</p>` : ''}
-                    <p class="break-words">${msg.content || msg.text || ''}</p>
+                    <p class="break-words">${escapeHTML(msg.content || msg.text || '')}</p>
                     <span class="block text-right text-[10px] ${isMe ? 'text-blue-200' : 'text-gray-400'} mt-1">${formatTime(msg.createdAt)}</span>
                 </div>
             </div>

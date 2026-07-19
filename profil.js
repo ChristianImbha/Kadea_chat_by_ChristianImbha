@@ -130,6 +130,18 @@ profileForm.addEventListener('submit', async (event) => {
     } finally {
         submitBtn.disabled = false;
     }
+  // Logout
+    const logoutBtn = document.getElementById('logout-btn');
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+        // Nettoyage de la session
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+        
+        // Redirection vers l'accueil / connexion
+        window.location.href = "index.html";
+    });
+}
     // ==========================================
 // GESTION DU THEME SOMBRE (DARK MODE)
 // ==========================================
