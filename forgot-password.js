@@ -52,7 +52,7 @@ resetForm.addEventListener('submit', async (e) => {
         if (response.ok) {
             alert('Votre mot de passe a été modifié avec succès !');
             // Redirection vers la page de connexion
-            window.location.href = 'index.html';
+            window.location.href = "index.html";
         } else {
             const errorData = await response.json();
             alert(`Erreur : ${errorData.message || 'Code invalide ou expiré.'}`);
