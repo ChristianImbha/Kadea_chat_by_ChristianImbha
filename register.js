@@ -49,7 +49,7 @@ document.querySelectorAll('.btn-toggle-password').forEach(button => {
 document.getElementById('popupClose').addEventListener('click', () => {
   const popup = document.getElementById('popup');
   popup.classList.add('hidden');
-  window.location.href = 'login.html'; // Redirection vers la page de connexion
+  window.location.href = 'index.html'; // Redirection vers la page de connexion
 });
 
 

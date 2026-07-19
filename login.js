@@ -59,7 +59,7 @@ if (loginForm) {
             return;
         }
 
-        // 🚀 SÉCURITÉ ACTIVE : On ne modifie les éléments que s'ils existent réellement dans le HTML
+        // SÉCURITÉ ACTIVE : On ne modifie les éléments que s'ils existent réellement dans le HTML
         if (loginBtn) {
             loginBtn.disabled = true;
         }

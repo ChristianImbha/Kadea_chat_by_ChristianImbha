@@ -52,12 +52,18 @@ function showListColumn() {
         if (colLeft) colLeft.classList.remove("hidden");
     }
 }
-
+let lastWidth = window.innerWidth;
 if (backBtn) {
     backBtn.addEventListener("click", showListColumn);
 }
 
 window.addEventListener("resize", () => {
+    // Si la largeur n'a pas changé (ex: le clavier change la hauteur mais pas la largeur), on ne fait rien
+    if (window.innerWidth === lastWidth) return;
+    
+    // Met à jour la dernière largeur connue
+    lastWidth = window.innerWidth;
+
     if (window.innerWidth >= 768) {
         if (colLeft) colLeft.classList.remove("hidden");
         if (colRight) {
@@ -65,6 +71,7 @@ window.addEventListener("resize", () => {
             colRight.classList.add("flex");
         }
     } else {
+        // En cas de vrai changement de largeur sur mobile (ex: passage en mode paysage)
         showListColumn();
     }
 });
