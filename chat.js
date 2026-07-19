@@ -630,7 +630,13 @@ function showToast(message, type = "success") {
 // SUPPRESSION D'UNE CONVERSATION COMPLETE
 // ===================================================
 async function deleteConversation(conversationId) {
-    if (!confirm("Attention ! Voulez-vous vraiment supprimer toute cette conversation ? Cette action est irréversible.")) return;
+    // Appel de notre modale personnalisée avec un texte adapté
+    const confirmed = await customConfirm("Attention ! Voulez-vous vraiment supprimer toute cette conversation ? Cette action est définitive.");
+    
+    if (!confirmed) {
+        showToast("Suppression annulée", "info");
+        return;
+    }
 
     try {
         const response = await fetch(`${API_URL}/conversations/${conversationId}`, {
@@ -644,7 +650,7 @@ async function deleteConversation(conversationId) {
         if (response.ok) {
             showToast("Conversation supprimée.", "success");
             activeConversationId = null;
-            if (messageInterval) clearInterval(messageInterval); // Arrête le polling
+            if (messageInterval) clearInterval(messageInterval); // Arrête le rafraîchissement automatique
             if (chatPanel) chatPanel.classList.add("hidden");
             await loadUsers();
             showListColumn();
@@ -656,7 +662,6 @@ async function deleteConversation(conversationId) {
         showToast("Une erreur est survenue.", "error");
     }
 }
-
 // ===================================================
 // INITIALISATION AU CHARGEMENT DE LA PAGE
 // ===================================================
