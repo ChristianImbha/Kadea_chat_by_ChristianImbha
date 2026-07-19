@@ -18,6 +18,20 @@ function escapeHTML(str) {
     );
 }
 
+// Fonction pour nettoyer l'URL de l'avatar et éviter les chaînes "null" ou "undefined"
+function getCleanAvatar(url, fullName = "Utilisateur") {
+    if (!url || 
+        url === "null" || 
+        url === "undefined" || 
+        url.trim() === "" || 
+        url.includes("placeholder.com")
+    ) {
+        //les initiales du nom de l'utilisateur
+        return `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=0D8ABC&color=fff&size=128`;
+    }
+    return url;
+}
+
 // Sécurisation de la page : Vérification immédiate du Token
 const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 if (!token) {
@@ -26,7 +40,7 @@ if (!token) {
 
 let activeConversationId = null;
 let messageInterval = null; // Permet de stocker le rafraîchissement automatique
-let editingMessageId = null; // Stocke l'ID du message en cours de modification (Ajouté)
+let editingMessageId = null; // Stocke l'ID du message en cours de modification
 
 // Ciblage des éléments du DOM
 const myAvatar = document.getElementById("active-user-avatar"); 
@@ -73,7 +87,7 @@ if (backBtn) {
 }
 
 window.addEventListener("resize", () => {
-    // Si la largeur n'a pas changé (ex: le clavier change la hauteur mais pas la largeur), on ne fait rien
+    // gestion de la largeur du clavier Si la largeur n'a pas changé
     if (window.innerWidth === lastWidth) return;
     
     // Met à jour la dernière largeur connue
@@ -137,21 +151,24 @@ async function loadMyProfile() {
 
         if (myId) {
             localStorage.setItem("userId", myId);
+            const userFullName = userData.fullName || "Utilisateur";
+            
+            // Nettoyage l'URL avant de la stocker et de l'afficher
+            const cleanUrl = getCleanAvatar(userData.avatarUrl, userFullName);
+
             if (myName) {
-                myName.textContent = userData.fullName || "Utilisateur";
+                myName.textContent = userFullName;
             }
             if (myAvatar) {
-                myAvatar.src = userData.avatarUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${myId}`;
+                myAvatar.src = cleanUrl;
             }
-            
-            // Mise à jour de l'avatar du haut "Mon Profil" 
             if (sidebarAvatar) {
-                sidebarAvatar.src = userData.avatarUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${myId}`;
+                sidebarAvatar.src = cleanUrl;
             }
             
-            // Stockage des informations pour la page Profil.html
-            localStorage.setItem("userAvatar", userData.avatarUrl || "");
-            localStorage.setItem("userName", userData.fullName || "");
+            // Stockage propre pour Profil.html
+            localStorage.setItem("userAvatar", cleanUrl);
+            localStorage.setItem("userName", userFullName);
             localStorage.setItem("userEmail", userData.email || "");
         }
     } catch (error) {
@@ -162,7 +179,7 @@ async function loadMyProfile() {
         
         // Sécurité en cas d'erreur réseau : on tente de charger depuis le localStorage
         if (sidebarAvatar) {
-            sidebarAvatar.src = localStorage.getItem("userAvatar") || "https://via.placeholder.com/40";
+            sidebarAvatar.src = getCleanAvatar(localStorage.getItem("userAvatar"), localName || "Mon Profil");
         }
     }
 }
@@ -219,17 +236,16 @@ function renderUsersList(users) {
     users.forEach(user => {
         const userElement = document.createElement("div");
         userElement.dataset.conversationId = user.id; 
-        // hover:bg-slate-100 en mode clair, hover:bg-slate-800 en mode sombre
         userElement.className = `conversation-item flex items-center space-x-3 p-3 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer rounded-xl transition text-slate-600 dark:text-slate-300`;
         
-        const displayAvatar = user.avatarUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.id}`;
+        // Nettoyage de l'avatar pour chaque utilisateur de la liste
+        const displayAvatar = getCleanAvatar(user.avatarUrl, user.fullName || 'Utilisateur');
 
         userElement.innerHTML = `
             <img src="${displayAvatar}" class="w-10 h-10 rounded-full object-cover" alt="Avatar">
             <div class="flex-1 min-w-0">
-                <!-- text-slate-800 en mode clair, dark:text-slate-100 en mode sombre -->
                 <h3 class="text-sm font-semibold text-slate-800 dark:text-slate-100 truncate">${user.fullName || 'Utilisateur'}</h3>
-                <p class="text-xs text-blue-500 truncate">Cliquez pour discuter</p>
+                <p class="text-xs text-blue-500 truncate">Cliquez pour ddiscuter</p>
             </div>
         `;
 
@@ -283,11 +299,9 @@ async function selectConversation(conv) {
     if (activeChatAvatar) activeChatAvatar.src = conv.avatar;
     if (chatPanel) chatPanel.classList.remove("hidden");
 
-    // Nettoyage complet des anciens états actifs (on enlève tout pour éviter les conflits)
+    // Nettoyage complet des anciens états actifs
     document.querySelectorAll(".conversation-item").forEach(item => {
         item.classList.remove("bg-blue-50", "text-blue-600", "dark:bg-slate-800", "dark:text-white");
-        
-        // On remet les classes de base neutres
         item.classList.add("text-slate-600", "dark:text-slate-300");
         const title = item.querySelector("h3");
         if (title) {
@@ -300,10 +314,8 @@ async function selectConversation(conv) {
     const selectedElement = document.querySelector(`[data-conversation-id="${conv.targetUserId}"]`);
     if (selectedElement) {       
         selectedElement.classList.remove("text-slate-600", "dark:text-slate-300");
-        // bg-blue-50 en mode clair / dark:bg-slate-800 en mode sombre
         selectedElement.classList.add("bg-blue-50", "text-blue-600", "dark:bg-slate-800", "dark:text-white");         
         
-        // On ajuste aussi la couleur du titre H3 pour qu'il soit bleu ou blanc
         const title = selectedElement.querySelector("h3");
         if (title) {
             title.classList.remove("text-slate-800", "dark:text-slate-100");
@@ -349,7 +361,6 @@ async function loadMessages(conversationId) {
 function renderMessages(messagesData) {
     if (!messagesContainer) return;
     
-    // Garder une trace du scroll utilisateur avant de vider le conteneur
     const isAtBottom = messagesContainer.scrollHeight - messagesContainer.scrollTop <= messagesContainer.clientHeight + 100;
 
     messagesContainer.innerHTML = ""; 
@@ -420,7 +431,6 @@ function renderMessages(messagesData) {
 function startEditMessage(messageId, buttonElement) {
     editingMessageId = messageId;
     
-    // Récupération intelligente et sécurisée du texte brut sans problème d'échappement
     const messageContainer = buttonElement.closest('.group');
     const textElement = messageContainer.querySelector('.msg-text-content');
     
@@ -454,7 +464,6 @@ if (messageForm) {
         const content = messageInput.value.trim();
         if (!content || !activeConversationId) return;
 
-        // On efface le champ de saisie immédiatement pour une meilleure UX
         messageInput.value = "";
 
         if (editingMessageId !== null) {
@@ -496,7 +505,7 @@ if (messageForm) {
 
                 if (response.ok) {
                     await loadMessages(activeConversationId);
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight; // Force le scroll après envoi
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
                 } else {
                     showToast("Erreur lors de l'envoi du message.", "error");
                 }
@@ -630,7 +639,6 @@ function showToast(message, type = "success") {
 // SUPPRESSION D'UNE CONVERSATION COMPLETE
 // ===================================================
 async function deleteConversation(conversationId) {
-    // Appel de notre modale personnalisée avec un texte adapté
     const confirmed = await customConfirm("Attention ! Voulez-vous vraiment supprimer toute cette conversation ? Cette action est définitive.");
     
     if (!confirmed) {
@@ -650,7 +658,7 @@ async function deleteConversation(conversationId) {
         if (response.ok) {
             showToast("Conversation supprimée.", "success");
             activeConversationId = null;
-            if (messageInterval) clearInterval(messageInterval); // Arrête le rafraîchissement automatique
+            if (messageInterval) clearInterval(messageInterval);
             if (chatPanel) chatPanel.classList.add("hidden");
             await loadUsers();
             showListColumn();
@@ -662,11 +670,11 @@ async function deleteConversation(conversationId) {
         showToast("Une erreur est survenue.", "error");
     }
 }
+
 // ===================================================
 // INITIALISATION AU CHARGEMENT DE LA PAGE
 // ===================================================
 document.addEventListener("DOMContentLoaded", () => {
-    // Écouteur pour rediriger vers le profil existant
     const profileTrigger = document.getElementById("my-profile-trigger");
     if (profileTrigger) {
         profileTrigger.addEventListener("click", () => {
@@ -674,7 +682,18 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ÉCOUTEUR SUR LE BOUTON DE SUPPRESSION DE LA DISCUSSION (Active le lien HTML-JS)
+    // --- CHARGEMENT INSTANTANÉ DEPUIS LE LOCALSTORAGE (Anti-latence) ---
+    const cachedAvatar = localStorage.getItem("userAvatar");
+    const cachedName = localStorage.getItem("userName") || "Mon Profil";
+
+    if (sidebarAvatar) {
+        sidebarAvatar.src = getCleanAvatar(cachedAvatar, cachedName);
+    }
+    if (myName) {
+        myName.textContent = cachedName;
+    }
+    // -------------------------------------------------------------------
+
     if (deleteConvBtn) {
         deleteConvBtn.addEventListener("click", () => {
             if (activeConversationId) {
@@ -685,7 +704,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Chargement initial des données
     loadMyProfile();
     loadUsers(); 
 });
