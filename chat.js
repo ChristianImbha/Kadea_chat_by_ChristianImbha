@@ -248,7 +248,7 @@ function renderUsersList(users) {
             <img src="${displayAvatar}" class="w-10 h-10 rounded-full object-cover" alt="Avatar">
             <div class="flex-1 min-w-0">
                 <h3 class="text-sm font-semibold text-slate-800 dark:text-slate-100 truncate">${user.fullName || 'Utilisateur'}</h3>
-                <p class="text-xs text-blue-500 truncate">Cliquez pour ddiscuter</p>
+                <p class="text-xs text-blue-500 truncate">Cliquez pour discuter</p>
             </div>
         `;
 

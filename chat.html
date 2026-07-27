@@ -87,9 +87,7 @@
         </div>
 
         <!-- Liste des conversations -->
-        <div id="rooms-list" class="flex-1 overflow-y-auto space-y-1 px-2 pb-4">
-            <!-- injection automatique des conversations s' -->
-        </div>
+        <div id="rooms-list" class="flex-1 overflow-y-auto space-y-1 px-2 pb-4"></div>
     </section>
 
     <!-- SECTION PRINCIPALE : Fenêtre de Chat -->
@@ -125,7 +123,7 @@
         <!-- Conteneur des messages -->
         <div id="messages-container" class="flex-1 overflow-y-auto p-6 space-y-4 flex flex-col">
             <div class="text-center text-slate-400 dark:text-slate-500 text-sm my-auto">
-                Cliquez sur une conversation à gauche pour commencer à ddiscuter.
+                Cliquez sur une conversation à gauche pour commencer à discuter.
             </div>
         </div>
 
@@ -151,7 +149,7 @@
         lucide.createIcons();
     </script>
     
-    <!-- MODAL DE CONFIRMATION PERSONNALISÉ -->
+    <!-- MODAL DE CONFIRMATION PERSONNALISÉ POUR MESSAGE -->
     <div id="confirm-modal" class="fixed inset-0 bg-black/50 z-[10000] hidden items-center justify-center p-4 transition-all duration-300 backdrop-blur-sm">
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-sm w-full shadow-2xl transform scale-95 transition-all duration-300 flex flex-col items-center text-center">
             <div class="h-12 w-12 rounded-full bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 flex items-center justify-center mb-4">
