@@ -1,6 +1,6 @@
 // BLOC 1 : Configuration globale et liaisons API
 const API_URL = "https://kadea-chat-api.onrender.com";
-const Workspace_API_KEY = "wksp_c3e1fb2ba091b7e4a9697b611e1d7168";
+const API_KEY = "wksp_c3e1fb2ba091b7e4a9697b611e1d7168";
 
 // Récupération des éléments du DOM pour le popup d'erreur personnalisé
 const customPopup = document.getElementById('custom-popup');
@@ -89,7 +89,7 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": Workspace_API_KEY
+        "x-api-key": API_KEY
       },
       body: JSON.stringify(payload)
     });

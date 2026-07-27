@@ -38,7 +38,7 @@ forgotForm.addEventListener('submit', async (e) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'x-api-key': Workspace_API_KEY
+                'x-api-key': API_KEY
             },
             body: JSON.stringify({ email: email })
         });

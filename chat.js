@@ -10,7 +10,7 @@ const API_URL = "https://kadea-chat-api.onrender.com";
 /**
  * Clé d'API nécessaire pour authentifier l'application auprès de l'espace de travail.
  */
-const Workspace_API_KEY = 'wksp_c3e1fb2ba091b7e4a9697b611e1d7168';
+const API_KEY = 'wksp_c3e1fb2ba091b7e4a9697b611e1d7168';
 
 /**
  * Nettoie une chaîne de caractères pour éviter les injections XSS (Cross-Site Scripting).
@@ -183,7 +183,7 @@ async function loadMyProfile() {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
-                "x-api-key": Workspace_API_KEY
+                "x-api-key": API_KEY
             }
         });
 
@@ -199,7 +199,7 @@ async function loadMyProfile() {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`,
-                    "x-api-key": Workspace_API_KEY
+                    "x-api-key": API_KEY
                 }
             });
         }
@@ -257,7 +257,7 @@ async function loadUsers() {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
-                "x-api-key": Workspace_API_KEY
+                "x-api-key": API_KEY
             }
         });
 
@@ -340,7 +340,7 @@ async function handleStartChat(targetUserId, displayName, displayAvatar) {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
-                "x-api-key": Workspace_API_KEY
+                "x-api-key": API_KEY
             },
             body: JSON.stringify({
                 type: "private",
@@ -439,7 +439,7 @@ async function loadMessages(conversationId) {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`,
-                "x-api-key": Workspace_API_KEY
+                "x-api-key": API_KEY
             }
         });
 
@@ -591,7 +591,7 @@ if (messageForm) {
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`,
-                        "x-api-key": Workspace_API_KEY
+                        "x-api-key": API_KEY
                     },
                     body: JSON.stringify({ content: content })
                 });
@@ -615,7 +615,7 @@ if (messageForm) {
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`,
-                        "x-api-key": Workspace_API_KEY
+                        "x-api-key": API_KEY
                     },
                     body: JSON.stringify({ content: content })
                 });
@@ -694,7 +694,7 @@ async function deleteMessage(messageId) {
             method: "DELETE",
             headers: {
                 "Authorization": `Bearer ${token}`,
-                "x-api-key": Workspace_API_KEY
+                "x-api-key": API_KEY
             }
         });
 
@@ -802,7 +802,7 @@ async function deleteConversation(conversationId) {
             method: "DELETE",
             headers: {
                 "Authorization": `Bearer ${token}`,
-                "x-api-key": Workspace_API_KEY
+                "x-api-key": API_KEY
             }
         });
 
