@@ -4,51 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kadea Chat - Profil</title>
+
+    <!-- SCRIPT DE PRÉVENTION DU FLASH (FOUC) -->
+    <!-- Vérifie le thème stocké dans le localStorage avant le rendu de la page -->
     <script>
-        // Vérification immédiate du thème pour éviter le flash blanc
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
             document.documentElement.classList.remove('dark');
         }
     </script>
+
+    <!-- CHARGEMENT DE TAILWIND CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
+        // Configuration de Tailwind pour utiliser le mode sombre via des classes CSS
         tailwind.config = {
             darkMode: 'class' 
         }
     </script>
+
+    <!-- POLICE GOOGLE FONTS & ICÔNES LUCIDE -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- STYLES PERSONNALISÉS GLOBAL -->
     <style>
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
+
 <body class="bg-[#f4f6fa] dark:bg-slate-900 text-[#1e293b] dark:text-slate-100 flex flex-col md:flex-row h-screen overflow-hidden transition-colors duration-300">
 
-    <!-- BARRE LATÉRALE -->
+    <!-- ========================================== -->
+    <!-- BARRE LATÉRALE DE NAVIGATION (SIDEBAR)     -->
+    <!-- Positionnée en bas sur mobile, à gauche sur PC -->
+    <!-- ========================================== -->
     <aside class="w-full md:w-20 bg-white dark:bg-slate-950 border-t md:border-t-0 md:border-r border-slate-200 dark:border-slate-800 flex flex-row md:flex-col justify-between items-center px-6 py-2 md:py-6 flex-shrink-0 fixed bottom-0 left-0 right-0 h-16 md:relative md:h-full z-50 shadow-lg md:shadow-none transition-colors duration-300">
+        
+        <!-- Section Supérieure : Logo et Menu principal -->
         <div class="flex flex-col items-center gap-8 w-full">
+            <!-- Brand Logo -->
             <a href="chat.html" class="text-blue-700 dark:text-blue-500 font-bold text-xl tracking-tight hover:opacity-80 transition">forum</a>
+            
+            <!-- Liens de navigation avec Tooltips CSS au survol -->
             <nav class="flex flex-col gap-6 w-full items-center">
+                 <!-- Bouton Retour Chat -->
                  <a href="chat.html" class="group relative p-2.5 md:p-3 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition flex items-center justify-center">
                     <i data-lucide="message-square-more" class="w-5 h-5 md:w-6 md:h-6"></i>
                     <span class="absolute left-16 md:left-20 bg-slate-800 text-white text-[11px] font-medium px-2 py-1 rounded shadow-md opacity-0 group-hover:opacity-100 transition whitespace-nowrap pointer-events-none z-50">
                         Retourner au chat
                     </span>
                  </a>
+
+                 <!-- Fonctionnalités indisponibles (Masquées sur très petits écrans) -->
                  <button type="button" class="group relative p-2.5 md:p-3 text-slate-400 cursor-not-allowed rounded-xl transition flex items-center justify-center hidden sm:flex">
                     <i data-lucide="phone" class="w-5 h-5 md:w-6 md:h-6"></i>
                     <span class="absolute left-16 md:left-20 bg-slate-800 text-white text-[11px] font-medium px-2 py-1 rounded shadow-md opacity-0 group-hover:opacity-100 transition whitespace-nowrap pointer-events-none z-50">
                         Indisponible
                     </span>
                  </button>
+
                  <button type="button" class="group relative p-2.5 md:p-3 text-slate-400 cursor-not-allowed rounded-xl transition flex items-center justify-center hidden sm:flex">
                     <i data-lucide="users" class="w-5 h-5 md:w-6 md:h-6"></i>
                     <span class="absolute left-16 md:left-20 bg-slate-800 text-white text-[11px] font-medium px-2 py-1 rounded shadow-md opacity-0 group-hover:opacity-100 transition whitespace-nowrap pointer-events-none z-50">
                         Indisponible
                     </span>
                  </button>
+
                  <button type="button" class="group relative p-2.5 md:p-3 text-slate-400 cursor-not-allowed rounded-xl transition flex items-center justify-center hidden sm:flex">
                     <i data-lucide="calendar" class="w-5 h-5 md:w-6 md:h-6"></i>
                     <span class="absolute left-16 md:left-20 bg-slate-800 text-white text-[11px] font-medium px-2 py-1 rounded shadow-md opacity-0 group-hover:opacity-100 transition whitespace-nowrap pointer-events-none z-50">
@@ -58,29 +81,42 @@
             </nav>
         </div>
 
+        <!-- Section Inférieure : Switch Thème & Plus -->
         <div class="flex flex-col items-center gap-6 w-full">
+            <!-- Bouton Changement de Thème (Light / Dark) -->
             <div class="relative w-full flex justify-center">
+                <!-- Indicateur visuel bleu à gauche -->
                 <div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-600 rounded-r"></div>
+                
                 <button id="theme-toggle" type="button" class="p-3 text-slate-400 hover:text-slate-600 dark:hover:text-white rounded-xl transition relative group flex items-center justify-center">
+                    <!-- Icône Lune pour Mode Clair -->
                     <i data-lucide="moon" class="w-6 h-6 dark:hidden"></i>
+                    <!-- Icône Soleil pour Mode Sombre -->
                     <i data-lucide="sun" class="w-6 h-6 hidden dark:block text-amber-400"></i>
+                    
                     <span class="absolute left-16 bg-slate-800 text-white text-[11px] font-medium px-2 py-1 rounded shadow-md opacity-0 group-hover:opacity-100 transition whitespace-nowrap pointer-events-none z-50">
                         Changer le thème
                     </span>
                 </button>
             </div>
+
+            <!-- Bouton Ajouter (Optionnel) -->
              <button type="button" class="group relative p-2.5 md:p-3 text-slate-400 cursor-not-allowed rounded-xl transition flex items-center justify-center hidden sm:flex">
                 <i data-lucide="plus" class="w-5 h-5 md:w-6 md:h-6"></i>
              </button>
         </div>
     </aside>
 
-    <!-- ZONE PRINCIPALE -->
+    <!-- ========================================== -->
+    <!-- CONTENU PRINCIPAL DE LA PAGE              -->
+    <!-- ========================================== -->
     <div class="flex-1 flex flex-col h-full overflow-y-auto">
         
-        <!-- HEADER -->
+        <!-- HEADER SUPÉRIEUR -->
         <header class="bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 px-8 py-4 flex justify-between items-center flex-shrink-0 transition-colors duration-300">
             <h1 class="text-blue-600 dark:text-blue-500 font-bold text-xl">Kadea Chat</h1>
+            
+            <!-- Actions rapides (Appels / Options) -->
             <div class="flex items-center gap-4 text-slate-600 dark:text-slate-400">
                 <button type="button" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition">
                     <i data-lucide="video" class="w-5 h-5"></i>
@@ -94,24 +130,29 @@
             </div>
         </header>
 
+        <!-- ZONE DU FORMULAIRE DE PROFIL -->
         <main class="flex-1 max-w-4xl w-full mx-auto px-6 py-10 flex flex-col items-center">
             
-            <!-- FORMULAIRE DE PROFIL GLOBAL -->
+            <!-- FORMULAIRE COMPLET DU PROFIL -->
             <form id="profile-form" class="w-full space-y-8">
                 
-                <!-- EN-TÊTE ENCART PROFIL -->
+                <!-- 1. CARTE EN-TÊTE : Avatar & Identité -->
                 <div class="w-full bg-white dark:bg-slate-800 p-6 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm flex flex-col items-center text-center transition-colors duration-300">
                     
-                    <!-- Avatar Clicable et Input Masqué -->
+                    <!-- Modification Avatar (Clic sur la photo déclenche l'input fichier) -->
                     <div class="relative group cursor-pointer mb-4" id="change-avatar-trigger" onclick="document.getElementById('avatar-input').click()">
                         <img id="profile-page-avatar" src="https://via.placeholder.com/120" alt="Avatar" class="w-28 h-28 rounded-full border-4 border-white dark:border-slate-700 object-cover shadow-lg group-hover:opacity-80 transition">
+                        
+                        <!-- Overlay Appareil Photo au survol -->
                         <div class="absolute inset-0 flex items-center justify-center bg-black/30 rounded-full opacity-0 group-hover:opacity-100 transition">
                             <i data-lucide="camera" class="w-6 h-6 text-white"></i>
                         </div>
+                        
+                        <!-- Input Fichier Masqué -->
                         <input type="file" id="avatar-input" accept="image/*" class="hidden">
                     </div>
                     
-                    <!-- Champs éditables pour l'identité principale -->
+                    <!-- Champs d'Identité Principal (Nom & Email) -->
                     <div class="w-full max-w-xs space-y-2">
                         <input type="text" id="profile-name" value="Christian Imbha" required
                             class="w-full text-center text-xl font-bold text-slate-800 dark:text-white bg-transparent border-b border-transparent hover:border-slate-300 focus:border-blue-500 focus:outline-none transition py-0.5">
@@ -119,16 +160,17 @@
                         <p id="profile-email" class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">christianimbha@gmail.com</p>
                     </div>
                     
+                    <!-- Badge d'Ancienneté -->
                     <div class="mt-4 inline-flex items-center gap-1.5 bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 text-xs font-medium px-3 py-1 rounded-full border border-blue-100 dark:border-blue-900/50">
                         <i data-lucide="badge-check" class="w-3.5 h-3.5"></i>
                         Membre depuis Octobre 2023
                     </div>
                 </div>
 
-                <!-- GRILLE DE DETAILS -->
+                <!-- 2. GRILLE DE DÉTAILS DU COMPTE (2 Colonnes sur PC) -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
                     
-                    <!-- CARTES DETAILS -->
+                    <!-- Carte 1 : Détails Personnels -->
                     <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-sm transition-colors duration-300">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="font-bold text-slate-800 dark:text-white text-base">Account Details</h3>
@@ -136,15 +178,20 @@
                         </div>
                         
                         <div class="space-y-4">
+                            <!-- Nom d'utilisateur (lecture seule) -->
                             <div>
                                 <label class="text-[11px] font-bold tracking-wider text-slate-400 dark:text-slate-500 uppercase block mb-1">Username / ID</label>
                                 <span id="profile-username" class="text-sm font-medium text-slate-700 dark:text-slate-300">arivera_chat</span>
                             </div>
+
+                            <!-- Statut / Bio Éditable -->
                             <div>
                                 <label for="profile-status" class="text-[11px] font-bold tracking-wider text-slate-400 dark:text-slate-500 uppercase block mb-1">Actu / Bio</label>
                                 <input type="text" id="profile-status" value="Disponible" required
                                     class="w-full text-sm font-medium text-slate-700 dark:text-slate-300 bg-transparent border-b border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:outline-none transition pb-1">
                             </div>
+
+                            <!-- Langue du système -->
                             <div>
                                 <span class="text-[11px] font-bold tracking-wider text-slate-400 dark:text-slate-500 uppercase block">Language</span>
                                 <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Français (FR)</span>
@@ -152,7 +199,7 @@
                         </div>
                     </div>
 
-                    <!-- CARTE SÉCURITÉ -->
+                    <!-- Carte 2 : Sécurité & Confidentialité -->
                     <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-sm flex flex-col justify-between transition-colors duration-300">
                         <div>
                             <div class="flex justify-between items-center mb-6">
@@ -161,6 +208,7 @@
                             </div>
                             
                             <div class="space-y-1">
+                                <!-- Double authentification (2FA) -->
                                 <div class="flex items-center justify-between py-2.5">
                                     <div class="flex items-center gap-3 text-slate-700 dark:text-slate-300">
                                         <i data-lucide="shield-check" class="w-5 h-5 text-slate-500"></i>
@@ -169,6 +217,7 @@
                                     <span class="text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 px-2.5 py-0.5 rounded">Enabled</span>
                                 </div>
                                 
+                                <!-- Lien Sessions Actives -->
                                 <button type="button" class="w-full flex items-center justify-between py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-lg transition -mx-2 px-2">
                                     <div class="flex items-center gap-3 text-slate-700 dark:text-slate-300">
                                         <i data-lucide="eye" class="w-5 h-5 text-slate-500"></i>
@@ -177,6 +226,7 @@
                                     <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
                                 </button>
                                 
+                                <!-- Lien Préférences de Notifications -->
                                 <button type="button" class="w-full flex items-center justify-between py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-lg transition -mx-2 px-2">
                                     <div class="flex items-center gap-3 text-slate-700 dark:text-slate-300">
                                         <i data-lucide="bell" class="w-5 h-5 text-slate-500"></i>
@@ -190,25 +240,26 @@
 
                 </div>
 
-                <!-- BOUTONS D'ACTIONS -->
+                <!-- 3. BOUTONS D'ACTION PRINCIPAUX -->
                 <div class="w-full max-w-md mx-auto flex flex-col gap-3 items-center">
-                    <!-- Bouton Submit connecté à l'API -->
+                    <!-- Soumission du formulaire (Enregistrer) -->
                     <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-xl flex items-center justify-center transition shadow-sm">
                         <i data-lucide="save" class="w-4 h-4 mr-2"></i>
                         Enregistrer les modifications
                     </button>
                     
+                    <!-- Changement de Mot de Passe -->
                     <button type="button" class="w-full bg-[#e2e8f0] hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-medium py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition">
                         <i data-lucide="key-round" class="w-4 h-4"></i>
                         Change Password
                     </button>
                 </div>
                 
-                <!-- ZONE DE MESSAGE D'ALERTE (Gérée par le script) -->
+                <!-- ZONE DU MESSAGE D'ALERTE (Dynamique via JS) -->
                 <div id="alert-box" class="hidden w-full max-w-md mx-auto p-3 rounded-xl text-xs text-center font-medium transition"></div>
             </form>
 
-            <!-- BOUTON DÉCONNEXION -->
+            <!-- 4. BOUTON DE DÉCONNEXION -->
             <div class="w-full max-w-md pt-4 border-t border-slate-200 dark:border-slate-700 mt-8">
                 <button type="button" id="logout-btn" class="w-full flex items-center justify-center space-x-2 bg-red-50 dark:bg-red-950/30 hover:bg-red-100 dark:hover:bg-red-950/50 text-red-600 dark:text-red-400 font-semibold py-2.5 px-4 rounded-xl transition duration-200 text-sm">
                     <i data-lucide="log-out" class="w-4 h-4"></i>
@@ -216,7 +267,7 @@
                 </button>
             </div>
 
-            <!-- FOOTER -->
+            <!-- FOOTER DE SÉCURITÉ -->
             <footer class="w-full border-t border-slate-200 dark:border-slate-700 pt-4 text-center mt-12">
                 <p class="text-[11px] text-slate-400 dark:text-slate-500 tracking-wide">Kadea Chat v1.0.0 — Encryption Active</p>
             </footer>
@@ -224,10 +275,14 @@
         </main>
     </div>
 
+    <!-- ========================================== -->
+    <!-- SCRIPTS JAVASCRIPT                         -->
+    <!-- ========================================== -->
     <script>
+        // Initialisation des icônes Lucide SVG
         lucide.createIcons();
 
-        // Logique du Dark Mode
+        // Gestionnaire du basculement Dark Mode
         const themeToggleBtn = document.getElementById('theme-toggle');
         themeToggleBtn.addEventListener('click', () => {
             if (document.documentElement.classList.contains('dark')) {
@@ -239,6 +294,8 @@
             }
         });
     </script>
+    
+    <!-- Script métier externe -->
     <script src="profil.js"></script>
 </body>
 </html>

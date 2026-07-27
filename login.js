@@ -45,7 +45,7 @@ if (loginForm) {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json",
-                    "x-api-key": API_KEY // Correction : Remplacement de Workspace_API_KEY par API_KEY
+                    "x-api-key": API_KEY 
                 },
                 body: JSON.stringify({
                     email: emailField.value.trim(),
