@@ -151,10 +151,12 @@ profileForm.addEventListener('submit', async (event) => {
 // ----------------------------------------------------------------------------
 const logoutBtn = document.getElementById('logout-btn');
 if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
+    logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
         // Suppression des identifiants et des jetons enregistrés localement
         localStorage.removeItem('token');
         localStorage.removeItem('userId');
+        localStorage.removeItem('user');
         
         // Redirection de l'utilisateur vers la page de connexion
         window.location.href = "index.html";
