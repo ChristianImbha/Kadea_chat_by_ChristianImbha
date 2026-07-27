@@ -3,75 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ===================================================
+         MÉTA-DONNÉES SE0 & OPEN GRAPH (Partage Réseaux)
+    =================================================== -->
     <meta property="og:title" content="Kadea Chat — Messagerie Collaborative en Temps Réel" />
-
-    <!--  protocole Open Graph.-->
     <meta property="og:description" content="Découvrez Kadea Chat, une application de messagerie instantanée fluide et sécurisée inspirée de Slack et WhatsApp. Échangez avec vos collaborateurs en toute simplicité." />
-
     <meta property="og:image" content="https://raw.githubusercontent.com/ChristianImbha/Kadea_chat_by_ChristianImbha/main/assets/preview-app.png" />
     <meta property="og:url" content="https://christianimbha.github.io/Kadea_chat_by_ChristianImbha/" />
     <meta property="og:type" content="website" />
 
-    <!-- Meta Tags pour Twitter / X -->
+    <!-- Cartes Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Kadea Chat" />
     <meta name="twitter:description" content="Application de messagerie instantanée fluide et moderne." />
     <meta name="twitter:image" content="https://raw.githubusercontent.com/ChristianImbha/Kadea_chat_by_ChristianImbha/main/assets/preview-app.png" />
-    <title>Kadea chat - Login</title>
+    
+    <title>Kadea Chat - Connexion</title>
+
+    <!-- ===================================================
+         GESTION DU THÈME (DÉTECTION PRÉCOCE)
+         Empêche le clignotement blanc lors du chargement en mode sombre.
+    =================================================== -->
     <script>
-    // Ce code s'exécute immédiatement avant le rendu de la page
-    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark');
-    } else {
-        document.documentElement.classList.remove('dark');
-    }
+
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
     </script>
+
+    <!-- Framework Tailwind CSS & Configuration -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class' 
         }
-    </script> 
+    </script>
+
+    <!-- Bibliothèques d'icônes : FontAwesome & Lucide -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="bg-[#f8fafc] flex flex-col items-center justify-center min-h-screen p-4 antialiased">
+
+<body class="bg-[#f8fafc] dark:bg-slate-900 flex flex-col items-center justify-center min-h-screen p-4 antialiased transition-colors duration-300">
     
+    <!-- En-tête avec logo et titre -->
     <header class="flex flex-col items-center text-center mb-6">
+
         <div class="text-blue-600 p-2 rounded-xl bg-blue-50">
             <i data-lucide="message-square" class="w-6 h-6"></i>
         </div>
         <h1 class="text-2xl font-bold text-blue-600 tracking-tight mt-2">Welcome back</h1>
     </header>
 
+    <!-- Zone principale : Formulaire de connexion -->
     <main class="w-full max-w-md">
-        <div class="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm">
+        <div class="bg-white dark:bg-slate-800 rounded-[2rem] border border-slate-100 dark:border-slate-700 p-8 shadow-sm transition-colors duration-300">
           
             <div class="mb-6">
-                <p class="text-sm text-slate-500 mt-1 text-center">Please enter your details to sign in to Kadea chat</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 text-center">
+                    Entrez vos identifiants pour vous connecter à Kadea Chat
+                </p>
             </div> 
 
+            <!-- Formulaire de connexion JS (login.js) -->
             <form id="login-form" class="space-y-4">
                 
-                <!-- Champ Email -->
+                <!-- Champ Adresse Email -->
                 <div>
-                    <label for="email" class="block text-sm font-medium text-slate-600 mb-1.5">Email Address</label>
+                    <label for="email" class="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1.5">Adresse Email</label>
                     <div class="relative rounded-xl">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-regular fa-envelope text-slate-400"></i>
                         </div>
-                        <input type="email" id="email" placeholder="name@example.com" required
-                          class="block w-full pl-11 pr-4 py-3 bg-[#eff4ff] border-0 rounded-xl text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none text-sm">
+                        <input type="email" id="email" placeholder="nom@exemple.com" required
+                          class="block w-full pl-11 pr-4 py-3 bg-[#eff4ff] dark:bg-slate-900 border-0 rounded-xl text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-900 transition-all outline-none text-sm">
                     </div>
                 </div>
+         
+                <!-- Champ Mot de Passe -->
 
-                <!-- Champ Mot de passe (CORRIGÉ ET SÉCURISÉ) -->
                 <div>
                     <div class="flex items-center justify-between mb-1.5">
-                        <label for="password" class="block text-sm font-medium text-slate-600">Password</label>
+                        <label for="password" class="block text-sm font-medium text-slate-600 dark:text-slate-300">Mot de passe</label>
                         <div class="text-sm">
-                            <a href="forgot-password.html" class="font-medium text-blue-600 hover:text-blue-700 hover:underline">
-                                Forgot password?
+                            <a href="forgot-password.html" class="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 hover:underline">
+                                Mot de passe oublié ?
                             </a>
                         </div>
                     </div> 
@@ -82,27 +102,30 @@
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-lock text-slate-400"></i>
                         </div>
+                 
+                        <input type="password" id="password" placeholder="••••••••" required
+                          class="block w-full pl-11 pr-11 py-3 bg-[#eff4ff] dark:bg-slate-900 border-0 rounded-xl text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-900 transition-all outline-none text-sm">
                         
-                        <!-- L'input avec l'ID 'password' et le padding à droite pr-12 pour laisser place à l'oeil -->
-                        <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password"
-                               class="block w-full pl-11 pr-12 py-3 bg-[#eff4ff] border-0 rounded-xl text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none text-sm">
-                        
-                        <!-- Le bouton œil isolé et forcé au premier plan (z-10) -->
-                        <button type="button" id="toggle-password-btn" 
-                                class="absolute right-0 top-0 bottom-0 px-4 flex items-center justify-center text-slate-400 hover:text-blue-600 transition-colors z-10 cursor-pointer focus:outline-none">
-                            <i id="toggle-password-icon" data-lucide="eye" class="w-5 h-5"></i>
-                        </button>
+                        <!-- Bouton pour afficher/masquer le mot de passe -->
+                        <div class="absolute inset-y-0 right-0 pr-4 flex items-center">
+                            <button type="button" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 focus:outline-none btn-toggle-password" data-target="password">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+
                     </div>
                 </div> 
 
+                <!-- Case à cocher "Se souvenir de moi" -->
                 <div class="flex items-center pt-2">
                     <input id="remember-me" name="remember-me" type="checkbox" 
                            class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer">
-                    <label for="remember-me" class="ml-2 block text-sm text-slate-600 cursor-pointer select-none">
-                        Keep me signed in
+                    <label for="remember-me" class="ml-2 block text-sm text-slate-600 dark:text-slate-400 cursor-pointer select-none">
+                        Rester connecté
                     </label>
                 </div>
 
+                <!-- Bouton d'action / Soumission avec spinner d'attente -->
                 <div class="pt-2">
                     <button type="submit" id="login-btn" class="w-full flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-xl transition duration-200 disabled:opacity-75 disabled:cursor-not-allowed">
                         <span id="login-spinner" class="hidden w-5 h-5 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
@@ -112,18 +135,22 @@
             </form>
         </div>
 
-        <p class="text-sm text-slate-600 text-center mt-6">
-            Don't have an account? <a href="register.html" class="text-blue-600 font-semibold hover:underline">Create Account</a>
+        <!-- Lien de création de compte -->
+        <p class="text-sm text-slate-600 dark:text-slate-400 text-center mt-6">
+            Vous n'avez pas encore de compte ? <a href="register.html" class="text-blue-600 dark:text-blue-400 font-semibold hover:underline">Créer un compte</a>
         </p>
-        
     </main>
 
+    <!-- Initialisation des icônes Lucide -->
     <script>
         // Initialisation de Lucide au démarrage
         lucide.createIcons();
     </script>
 
+    <!-- Script de traitement JS -->
     <script src="login.js"></script>
+
+    <!-- Conteneur d'affichage des notifications dynamiques Toast -->
     <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-3 max-w-sm w-full"></div>
 </body>
 </html>
