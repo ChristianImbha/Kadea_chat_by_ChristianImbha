@@ -286,19 +286,7 @@
     <!-- ========================================== -->
     <script>
         // Initialisation des icônes Lucide SVG
-        lucide.createIcons();
-
-        // Gestionnaire du basculement Dark Mode
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        themeToggleBtn.addEventListener('click', () => {
-            if (document.documentElement.classList.contains('dark')) {
-                document.documentElement.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
-            } else {
-                document.documentElement.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
-            }
-        });
+        lucide.createIcons();      
     </script>
     
     <!-- Script métier externe -->

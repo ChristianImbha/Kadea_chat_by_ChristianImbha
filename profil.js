@@ -167,6 +167,7 @@ if (logoutBtn) {
 // 6. GESTION DU BASCULEMENT DE THÈME (DARK / LIGHT MODE)
 // ----------------------------------------------------------------------------
 const themeToggleBtn = document.getElementById('theme-toggle');
+
 if (themeToggleBtn) {
     themeToggleBtn.addEventListener('click', () => {
         if (document.documentElement.classList.contains('dark')) {
